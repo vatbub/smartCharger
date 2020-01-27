@@ -19,6 +19,7 @@
  */
 package com.github.vatbub.smartcharge
 
+import com.beust.jcommander.JCommander
 import com.github.vatbub.common.core.Common
 import com.github.vatbub.javaautostart.AutoStartManager
 import javafx.application.Application
@@ -30,12 +31,14 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import org.apache.commons.lang3.SystemUtils
 import java.awt.TrayIcon
+import kotlin.system.exitProcess
 
 const val appId = "com.github.vatbub.smartCharge"
 
 class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) : Application() {
     companion object {
         private lateinit var startupArgs: Array<out String>
+        val commandLineArgs = CommandLineArgs()
         var instance: EntryClass? = null
         private var shutdownActionsPerformed = false
         val autoStartManager = if (SystemUtils.IS_OS_WINDOWS) AutoStartManager(appId) else null
@@ -45,18 +48,36 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
         @JvmStatic
         fun main(vararg args: String) {
             startupArgs = args
+            val jCommander = JCommander(commandLineArgs)
+            jCommander.parse(*args)
+            if (commandLineArgs.help) {
+                jCommander.usage()
+                exitProcess(1)
+            }
+
             Common.getInstance().appName = appId
             Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
+
             logger.info("Welcome to smartCharge!")
             val lockFlag = unique.acquireLock()
             if (!lockFlag)
                 throw IllegalStateException("Unable to acquire the instance/IM java.exe lock using Unique4j!")
 
+            val modeToApply = commandLineArgs.chargingMode
+            if (modeToApply != null)
+                preferences[Keys.CurrentChargingMode] = modeToApply
+
             Daemon.applyConfiguration()
+
+            val chargerStateToApply = commandLineArgs.switchChargerState
+            if (chargerStateToApply != null)
+                Daemon.switchCharger(chargerStateToApply)
+
             SystemTrayManager.createMenu()
 
-            if (!args.contains("--noGui"))
+            if (!commandLineArgs.noGui)
                 startGui()
+
             Runtime.getRuntime().addShutdownHook(Thread { performShutDownTasks() })
 
         }

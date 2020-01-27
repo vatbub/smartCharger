@@ -19,12 +19,56 @@
  */
 package com.github.vatbub.smartcharge
 
+import com.github.vatbub.smartcharge.ApplicationInstanceMessage.*
+import com.github.vatbub.smartcharge.ChargingMode.*
+import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
+import com.github.vatbub.smartcharge.Daemon.ChargerState.On
+import javafx.application.Platform
 import tk.pratanumandal.unique4j.Unique
+
+private enum class ApplicationInstanceMessage {
+    showGui, modeFull, modeOptimized, modeNoCharge, switchChargerOn, switchChargerOff
+}
+
+private object MessageHelper {
+    private val separator = ";"
+
+    fun buildMessage(): String {
+        val messages = mutableListOf<ApplicationInstanceMessage>()
+
+        if (!EntryClass.commandLineArgs.noGui)
+            messages.add(showGui)
+
+        val chargerModeMessage = when (EntryClass.commandLineArgs.chargingMode) {
+            AlwaysOn -> modeFull
+            ChargingMode.Optimized -> modeOptimized
+            ChargingMode.AlwaysOff -> modeNoCharge
+            null -> null
+        }
+        if (chargerModeMessage != null)
+            messages.add(chargerModeMessage)
+
+        val chargerStateMessage = when (EntryClass.commandLineArgs.switchChargerState) {
+            On -> switchChargerOn
+            Off -> switchChargerOff
+            null -> null
+        }
+        if (chargerStateMessage != null)
+            messages.add(chargerStateMessage)
+
+        return messages.joinToString(separator)
+    }
+
+    fun decode(message: String): List<ApplicationInstanceMessage> {
+        val splitResult = message.split(separator)
+        return List(splitResult.size) { ApplicationInstanceMessage.valueOf(splitResult[it]) }
+    }
+}
 
 val unique = object : Unique(appId) {
     override fun sendMessage(): String {
-        logger.warn("Another instance is already running, sending a message to this instance...")
-        return "otherInstanceShowGui"
+        logger.warn("Another instance is already running, passing arguments to other instance...")
+        return MessageHelper.buildMessage()
     }
 
     override fun handleException(exception: Exception?) {
@@ -32,9 +76,26 @@ val unique = object : Unique(appId) {
             throw exception
     }
 
-    override fun receiveMessage(p0: String?) {
-        logger.info("Received a message from another instance of this application, showing the main gui...")
-        GuiHelper.showMainView()
+    override fun receiveMessage(message: String?) {
+        if (message == null) {
+            logger.warn("Received a message from another instance of this application, but the message was null. This is likely a bug, but it will be ignored for now. Also: https://www.xkcd.com/2200/")
+            return
+        }
+
+        logger.info("Received a message from another instance of this application, executing appropriate actions...")
+        MessageHelper.decode(message).forEach {
+            when (it) {
+                showGui -> GuiHelper.showMainView()
+                modeFull -> preferences[Keys.CurrentChargingMode] = AlwaysOn
+                modeOptimized -> preferences[Keys.CurrentChargingMode] = Optimized
+                modeNoCharge -> preferences[Keys.CurrentChargingMode] = AlwaysOff
+                switchChargerOn -> Daemon.switchCharger(On)
+                switchChargerOff -> Daemon.switchCharger(Off)
+            }
+        }
+        Daemon.applyConfiguration()
+        SystemTrayManager.updateTrayMenu()
+        Platform.runLater { EntryClass.instance?.controllerInstance?.updateGuiFromConfiguration() }
     }
 
     override fun beforeExit() {
