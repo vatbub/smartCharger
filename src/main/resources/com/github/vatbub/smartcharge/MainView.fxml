@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.vatbub.smartcharge.MainView">
+    <children>
+        <GridPane hgap="8.0" layoutX="246.0" layoutY="131.0" vgap="8.0" AnchorPane.bottomAnchor="0.0"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" maxWidth="200.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Label text="Some basic settings:" GridPane.columnSpan="2147483647">
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                </Label>
+                <Label text="IFTTT Maker API Key:" GridPane.rowIndex="1"/>
+                <HBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <children>
+                        <TextField fx:id="textFieldIFTTTMakerApiKey" promptText="e. g. e9763gf7gez9e_gd769wh"
+                                   HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#buttonHelpApiKeyOnAction" text="What's that?"/>
+                    </children>
+                </HBox>
+                <Label text="What's the battery level that you want to start charging at?" wrapText="true"
+                       GridPane.rowIndex="4"/>
+                <Label text="What's the battery level that you want to stop charging at?" wrapText="true"
+                       GridPane.rowIndex="5"/>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <children>
+                        <TextField fx:id="textFieldMinPercentage" maxWidth="1.7976931348623157E308" prefWidth="50.0"
+                                   HBox.hgrow="NEVER"/>
+                        <Label maxWidth="1.7976931348623157E308" text="\%" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <children>
+                        <TextField fx:id="textFieldMaxPercentage" maxWidth="1.7976931348623157E308" prefWidth="50.0"
+                                   HBox.hgrow="NEVER"/>
+                        <Label maxWidth="1.7976931348623157E308" text="\%" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+                <Label text="Name of the IFTTT Event to send to start charging:" wrapText="true" GridPane.rowIndex="2"/>
+                <Label text="Name of the IFTTT Event to send to stop charging:" wrapText="true" GridPane.rowIndex="3"/>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <children>
+                        <TextField fx:id="textFieldStartEvent" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#buttonHelpStartEventOnAction" text="What's that?"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <children>
+                        <TextField fx:id="textFieldStopEvent" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#buttonHelpStopEventOnAction" text="What's that?"/>
+                    </children>
+                </HBox>
+                <GridPane hgap="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER"/>
+                    </rowConstraints>
+                    <children>
+                        <ToggleButton fx:id="toggleButtonChargeFull" maxWidth="1.7976931348623157E308"
+                                      mnemonicParsing="false"
+                                      text="Charge my laptop to the broom! (Use that if you need full power of your laptop)"
+                                      textAlignment="CENTER" wrapText="true" GridPane.hgrow="ALWAYS"
+                                      GridPane.vgrow="ALWAYS"/>
+                        <ToggleButton fx:id="toggleButtonChargeOptimized" maxWidth="1.7976931348623157E308"
+                                      mnemonicParsing="false"
+                                      text="Optimized charging (Use that if you want to optimize battery life)"
+                                      textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1"
+                                      GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+                        <ToggleButton fx:id="toggleButtonStopCharging" maxWidth="1.7976931348623157E308"
+                                      mnemonicParsing="false" text="Stop charging" textAlignment="CENTER"
+                                      wrapText="true" GridPane.columnIndex="2"/>
+                    </children>
+                </GridPane>
+                <Label fx:id="warningLabel" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
+                       maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS"
+                       GridPane.rowIndex="9" GridPane.vgrow="ALWAYS"/>
+                <CheckBox fx:id="checkBoxStopChargingOnShutdown" mnemonicParsing="false"
+                          text="Stop charging when I shut the computer down" wrapText="true"
+                          GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
+                <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
+                          GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
+            </children>
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            </padding>
+        </GridPane>
+    </children>
+</AnchorPane>
