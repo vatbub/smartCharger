@@ -86,14 +86,22 @@ val unique = object : Unique(appId) {
         MessageHelper.decode(message).forEach {
             when (it) {
                 showGui -> GuiHelper.showMainView()
-                modeFull -> preferences[Keys.CurrentChargingMode] = AlwaysOn
-                modeOptimized -> preferences[Keys.CurrentChargingMode] = Optimized
-                modeNoCharge -> preferences[Keys.CurrentChargingMode] = AlwaysOff
+                modeFull -> {
+                    preferences[Keys.CurrentChargingMode] = AlwaysOn
+                    Daemon.applyConfiguration()
+                }
+                modeOptimized -> {
+                    preferences[Keys.CurrentChargingMode] = Optimized
+                    Daemon.applyConfiguration()
+                }
+                modeNoCharge -> {
+                    preferences[Keys.CurrentChargingMode] = AlwaysOff
+                    Daemon.applyConfiguration()
+                }
                 switchChargerOn -> Daemon.switchCharger(On)
                 switchChargerOff -> Daemon.switchCharger(Off)
             }
         }
-        Daemon.applyConfiguration()
         SystemTrayManager.updateTrayMenu()
         Platform.runLater { EntryClass.instance?.controllerInstance?.updateGuiFromConfiguration() }
     }
