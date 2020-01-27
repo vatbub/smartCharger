@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit
 object Daemon {
     private var scheduledExecutorService: ScheduledExecutorService? = null
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val isRunning: Boolean
         get() {
             synchronized(Lock) {
@@ -80,7 +81,7 @@ object Daemon {
         logger.info("Event successfully sent to IFTTT.")
     }
 
-    fun start() {
+    private fun start() {
         synchronized(Lock) {
             logger.info("[DAEMON] Initializing optimized charging...")
             val newExecutorService = Executors.newSingleThreadScheduledExecutor()

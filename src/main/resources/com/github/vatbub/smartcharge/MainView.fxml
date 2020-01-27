@@ -38,9 +38,9 @@
                         <Button mnemonicParsing="false" onAction="#buttonHelpApiKeyOnAction" text="What's that?"/>
                     </children>
                 </HBox>
-                <Label text="What's the battery level that you want to start charging at?" wrapText="true"
+                <Label text="What's the battery level you want to start charging at?" wrapText="true"
                        GridPane.rowIndex="4"/>
-                <Label text="What's the battery level that you want to stop charging at?" wrapText="true"
+                <Label text="What's the battery level you want to stop charging at?" wrapText="true"
                        GridPane.rowIndex="5"/>
                 <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <children>

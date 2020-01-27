@@ -27,30 +27,30 @@ import javafx.application.Platform
 import tk.pratanumandal.unique4j.Unique
 
 private enum class ApplicationInstanceMessage {
-    showGui, modeFull, modeOptimized, modeNoCharge, switchChargerOn, switchChargerOff
+    ShowGui, ModeFull, ModeOptimized, ModeNoCharge, SwitchChargerOn, SwitchChargerOff
 }
 
 private object MessageHelper {
-    private val separator = ";"
+    private const val separator = ";"
 
     fun buildMessage(): String {
         val messages = mutableListOf<ApplicationInstanceMessage>()
 
         if (!EntryClass.commandLineArgs.noGui)
-            messages.add(showGui)
+            messages.add(ShowGui)
 
         val chargerModeMessage = when (EntryClass.commandLineArgs.chargingMode) {
-            AlwaysOn -> modeFull
-            ChargingMode.Optimized -> modeOptimized
-            ChargingMode.AlwaysOff -> modeNoCharge
+            AlwaysOn -> ModeFull
+            Optimized -> ModeOptimized
+            AlwaysOff -> ModeNoCharge
             null -> null
         }
         if (chargerModeMessage != null)
             messages.add(chargerModeMessage)
 
         val chargerStateMessage = when (EntryClass.commandLineArgs.switchChargerState) {
-            On -> switchChargerOn
-            Off -> switchChargerOff
+            On -> SwitchChargerOn
+            Off -> SwitchChargerOff
             null -> null
         }
         if (chargerStateMessage != null)
@@ -61,7 +61,10 @@ private object MessageHelper {
 
     fun decode(message: String): List<ApplicationInstanceMessage> {
         val splitResult = message.split(separator)
-        return List(splitResult.size) { ApplicationInstanceMessage.valueOf(splitResult[it]) }
+        return List(splitResult.size) {
+            @Suppress("RemoveRedundantQualifierName")
+            ApplicationInstanceMessage.valueOf(splitResult[it])
+        }
     }
 }
 
@@ -85,21 +88,21 @@ val unique = object : Unique(appId) {
         logger.info("Received a message from another instance of this application, executing appropriate actions...")
         MessageHelper.decode(message).forEach {
             when (it) {
-                showGui -> GuiHelper.showMainView()
-                modeFull -> {
+                ShowGui -> GuiHelper.showMainView()
+                ModeFull -> {
                     preferences[Keys.CurrentChargingMode] = AlwaysOn
                     Daemon.applyConfiguration()
                 }
-                modeOptimized -> {
+                ModeOptimized -> {
                     preferences[Keys.CurrentChargingMode] = Optimized
                     Daemon.applyConfiguration()
                 }
-                modeNoCharge -> {
+                ModeNoCharge -> {
                     preferences[Keys.CurrentChargingMode] = AlwaysOff
                     Daemon.applyConfiguration()
                 }
-                switchChargerOn -> Daemon.switchCharger(On)
-                switchChargerOff -> Daemon.switchCharger(Off)
+                SwitchChargerOn -> Daemon.switchCharger(On)
+                SwitchChargerOff -> Daemon.switchCharger(Off)
             }
         }
         SystemTrayManager.updateTrayMenu()
