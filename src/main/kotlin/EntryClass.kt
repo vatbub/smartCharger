@@ -67,31 +67,36 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
             if (modeToApply != null)
                 preferences[Keys.CurrentChargingMode] = modeToApply
 
-            Daemon.applyConfiguration()
+            if (!commandLineArgs.noDaemon) {
+                Daemon.applyConfiguration()
+                SystemTrayManager.createMenu()
+            }
 
             val chargerStateToApply = commandLineArgs.switchChargerState
             if (chargerStateToApply != null)
                 Daemon.switchCharger(chargerStateToApply)
-
-            SystemTrayManager.createMenu()
 
             if (!commandLineArgs.noGui)
                 startGui()
 
             Runtime.getRuntime().addShutdownHook(Thread { performShutDownTasks() })
 
+            if (commandLineArgs.noDaemon) {
+                performShutDownTasks(ignoreShutdownSetting = true)
+                exitProcess(0)
+            }
         }
 
         fun startGui() {
             EntryClass(true, *startupArgs)
         }
 
-        fun performShutDownTasks() {
+        fun performShutDownTasks(ignoreShutdownSetting: Boolean = false) {
             if (shutdownActionsPerformed) return
             synchronized(ShutdownLock) {
                 if (shutdownActionsPerformed) return
                 Daemon.stop()
-                if (preferences[Keys.StopChargingOnShutdown]) {
+                if (preferences[Keys.StopChargingOnShutdown] && !ignoreShutdownSetting) {
                     logger.info("Switching the charger off at shut down...")
                     Daemon.switchCharger(Daemon.ChargerState.Off)
                 }
