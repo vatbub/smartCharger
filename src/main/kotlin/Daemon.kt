@@ -103,6 +103,7 @@ object Daemon {
 
     fun stop() {
         synchronized(Lock) {
+            if (!isRunning) return
             logger.info("[DAEMON] Shutting the daemon down...")
             scheduledExecutorService?.shutdownNow()
         }
