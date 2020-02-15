@@ -57,6 +57,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
 
             Common.getInstance().appName = appId
             Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
+            initializeSystemOutAndErrCopy()
 
             logger.info("Welcome to smartCharge!")
             val lockFlag = unique.acquireLock()
@@ -154,6 +155,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
     }
 
     fun hideMainView() {
+        controllerInstance?.delayLogUpdatesAndSuppressErrorDialogs = true
         currentStage?.hide()
     }
 
@@ -161,5 +163,6 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
         val stage = currentStage ?: return
         stage.show()
         stage.isIconified = false
+        controllerInstance?.delayLogUpdatesAndSuppressErrorDialogs = false
     }
 }

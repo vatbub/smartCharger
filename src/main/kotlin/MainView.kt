@@ -21,22 +21,27 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.javaautostart.AutoStartLaunchConfig
 import com.github.vatbub.smartcharge.ChargingMode.*
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.geometry.Insets
-import javafx.scene.control.CheckBox
-import javafx.scene.control.Label
-import javafx.scene.control.TextField
-import javafx.scene.control.ToggleButton
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.layout.CornerRadii
-import javafx.scene.paint.Color
+import javafx.scene.control.*
+import javafx.scene.layout.GridPane
+import javafx.scene.layout.Priority
+import org.apache.commons.lang3.exception.ExceptionUtils
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URL
 import java.util.*
 
 
 class MainView {
+
+    var delayLogUpdatesAndSuppressErrorDialogs = false
+        set(value) {
+            field = value
+            if (!value)
+                updateLogView()
+        }
 
     @FXML
     private lateinit var resources: ResourceBundle
@@ -54,7 +59,7 @@ class MainView {
     private lateinit var textFieldStopEvent: TextField
 
     @FXML
-    private lateinit var warningLabel: Label
+    private lateinit var logArea: TextArea
 
     @FXML
     private lateinit var toggleButtonChargeOptimized: ToggleButton
@@ -97,7 +102,7 @@ class MainView {
         assert(textFieldIFTTTMakerApiKey != null) { "fx:id=\"textFieldIFTTTMakerApiKey\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldMinPercentage != null) { "fx:id=\"textFieldMinPercentage\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldStopEvent != null) { "fx:id=\"textFieldStopEvent\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(warningLabel != null) { "fx:id=\"warningLabel\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(logArea != null) { "fx:id=\"logArea\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonChargeOptimized != null) { "fx:id=\"toggleButtonChargeOptimized\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonChargeFull != null) { "fx:id=\"toggleButtonChargeFull\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldStartEvent != null) { "fx:id=\"textFieldStartEvent\" was not injected: check your FXML file 'MainView.fxml'." }
@@ -107,10 +112,11 @@ class MainView {
         assert(checkBoxAutoStart != null) { "fx:id=\"checkBoxAutoStart\" was not injected: check your FXML file 'MainView.fxml'." }
 
         updateGuiFromConfiguration()
+        updateLogView()
+        systemOutCopyStream.onContentAppend.add { _, appendedText -> updateLogView(appendedText) }
 
         textFieldIFTTTMakerApiKey.textProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             preferences[Keys.IFTTTMakerApiKey] = newValue
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -118,7 +124,6 @@ class MainView {
 
         textFieldStartEvent.textProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             preferences[Keys.IFTTTStartChargingEventName] = newValue
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -126,7 +131,6 @@ class MainView {
 
         textFieldStopEvent.textProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             preferences[Keys.IFTTTStopChargingEventName] = newValue
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -134,7 +138,6 @@ class MainView {
 
         textFieldMinPercentage.textProperty().addListener { _, oldValue, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             try {
                 val newDouble = if (newValue != "") newValue.toDouble() else 0.0
                 if (newDouble < 0 || newDouble > 100)
@@ -151,7 +154,6 @@ class MainView {
 
         textFieldMaxPercentage.textProperty().addListener { _, oldValue, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             try {
                 val newDouble = if (newValue != "") newValue.toDouble() else 0.0
                 if (newDouble < 0 || newDouble > 100)
@@ -168,7 +170,6 @@ class MainView {
 
         checkBoxStopChargingOnShutdown.selectedProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            hideException()
             preferences[Keys.StopChargingOnShutdown] = newValue
             updateGuiFromConfiguration()
         }
@@ -186,7 +187,6 @@ class MainView {
             if (guiUpdateInProgress) return@addListener
             if (newValue == false) return@addListener
 
-            hideException()
             preferences[Keys.CurrentChargingMode] = AlwaysOn
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -197,7 +197,6 @@ class MainView {
             if (guiUpdateInProgress) return@addListener
             if (newValue == false) return@addListener
 
-            hideException()
             preferences[Keys.CurrentChargingMode] = Optimized
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -208,7 +207,6 @@ class MainView {
             if (guiUpdateInProgress) return@addListener
             if (newValue == false) return@addListener
 
-            hideException()
             preferences[Keys.CurrentChargingMode] = AlwaysOff
             Daemon.applyConfiguration()
             updateGuiFromConfiguration()
@@ -268,13 +266,51 @@ class MainView {
         guiUpdateInProgress = false
     }
 
-    fun showException(e: Throwable) {
-        warningLabel.background = Background(BackgroundFill(Color.RED, CornerRadii(8.0), Insets(0.0, 0.0, 0.0, 0.0)))
-        warningLabel.text = "${e.javaClass.name}: ${e.localizedMessage}"
+    private fun updateLogView(appendedText: String? = null) {
+        if (delayLogUpdatesAndSuppressErrorDialogs) return
+
+        if (appendedText == null) {
+            logArea.text = systemOutCopyStream.content
+            Platform.runLater { logArea.scrollTop = Double.MAX_VALUE }
+        } else {
+            logArea.appendText(appendedText)
+        }
     }
 
-    fun hideException() {
-        warningLabel.background = Background.EMPTY
-        warningLabel.text = ""
+    fun showException(e: Throwable) {
+        if (delayLogUpdatesAndSuppressErrorDialogs) return
+
+        val alert = Alert(Alert.AlertType.ERROR)
+        alert.title = "SmartCharge: Exception"
+        alert.headerText = "An exception occurred."
+
+        val rootCause = ExceptionUtils.getRootCause(e)!!
+
+        alert.contentText = "${rootCause.javaClass.name}: ${rootCause.message}"
+
+        val stringWriter = StringWriter()
+        e.printStackTrace(PrintWriter(stringWriter))
+
+        val label = Label("The stacktrace was:")
+        val textArea = TextArea(stringWriter.toString())
+        with(textArea) {
+            isWrapText = false
+            isEditable = false
+            maxWidth = Double.MAX_VALUE
+            maxHeight = Double.MAX_VALUE
+        }
+        GridPane.setVgrow(textArea, Priority.ALWAYS)
+        GridPane.setHgrow(textArea, Priority.ALWAYS)
+
+        val expandableContent = GridPane()
+        with(expandableContent) {
+            maxWidth = Double.MAX_VALUE
+            add(label, 0, 0)
+            add(textArea, 0, 1)
+        }
+
+        alert.dialogPane.expandableContent = expandableContent
+
+        alert.show()
     }
 }

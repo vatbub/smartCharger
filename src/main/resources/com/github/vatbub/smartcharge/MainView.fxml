@@ -3,8 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="com.github.vatbub.smartcharge.MainView">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8" fx:controller="com.github.vatbub.smartcharge.MainView">
     <children>
         <GridPane hgap="8.0" layoutX="246.0" layoutY="131.0" vgap="8.0" AnchorPane.bottomAnchor="0.0"
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -22,6 +22,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER"/>
                 <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
@@ -95,14 +97,14 @@
                                       wrapText="true" GridPane.columnIndex="2"/>
                     </children>
                 </GridPane>
-                <Label fx:id="warningLabel" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308"
-                       maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS"
-                       GridPane.rowIndex="9" GridPane.vgrow="ALWAYS"/>
                 <CheckBox fx:id="checkBoxStopChargingOnShutdown" mnemonicParsing="false"
                           text="Stop charging when I shut the computer down" wrapText="true"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
                 <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
+                <TextArea fx:id="logArea" editable="false" prefHeight="200.0" GridPane.columnSpan="2147483647"
+                          GridPane.rowIndex="11"/>
+                <Label text="Application log:" GridPane.rowIndex="10"/>
             </children>
             <padding>
                 <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
