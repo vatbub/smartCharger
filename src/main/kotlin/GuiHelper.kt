@@ -20,9 +20,6 @@
 package com.github.vatbub.smartcharge
 
 import javafx.application.Platform
-import org.apache.commons.lang3.SystemUtils
-import java.awt.Desktop
-import java.io.File
 
 object GuiHelper {
     fun showMainView() {
@@ -30,14 +27,5 @@ object GuiHelper {
             Thread { EntryClass.startGui() }.start()
         else
             Platform.runLater { EntryClass.instance?.showMainView() }
-    }
-
-    fun highlightFileInExplorer(file: File) {
-        if (!SystemUtils.IS_OS_WINDOWS || file.isDirectory) {
-            val folder = if (file.isDirectory) file else file.parentFile
-            Desktop.getDesktop().open(folder)
-        } else {
-            Runtime.getRuntime().exec("explorer.exe /select, ${file.absolutePath}")
-        }
     }
 }

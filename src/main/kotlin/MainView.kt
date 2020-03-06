@@ -21,6 +21,7 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.javaautostart.AutoStartLaunchConfig
 import com.github.vatbub.smartcharge.ChargingMode.*
+import com.github.vatbub.smartcharge.extensions.highlightFileInExplorer
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.collections.ListChangeListener
@@ -102,7 +103,7 @@ class MainView {
     @FXML
     fun buttonShowLogFileOnAction(event: ActionEvent?) {
         val currentLogFile = LoggingHandlers.currentLogFile ?: throw IllegalStateException("File logging is disabled")
-        GuiHelper.highlightFileInExplorer(currentLogFile)
+        currentLogFile.highlightFileInExplorer()
     }
 
     @Suppress("SENSELESS_COMPARISON")
