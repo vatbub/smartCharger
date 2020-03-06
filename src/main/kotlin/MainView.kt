@@ -99,6 +99,12 @@ class MainView {
     fun buttonHelpStopEventOnAction(event: ActionEvent?) {
     }
 
+    @FXML
+    fun buttonShowLogFileOnAction(event: ActionEvent?) {
+        val currentLogFile = LoggingHandlers.currentLogFile ?: throw IllegalStateException("File logging is disabled")
+        GuiHelper.highlightFileInExplorer(currentLogFile)
+    }
+
     @Suppress("SENSELESS_COMPARISON")
     @FXML
     fun initialize() {

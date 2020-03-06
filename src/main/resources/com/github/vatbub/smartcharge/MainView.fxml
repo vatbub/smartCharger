@@ -108,7 +108,6 @@
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
                 <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
-                <Label text="Application log:" GridPane.rowIndex="10"/>
                 <ScrollPane fx:id="logScrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                             minHeight="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
                     <content>
@@ -122,6 +121,13 @@
                         <Insets bottom="1.0" left="16.0" right="16.0" top="1.0"/>
                     </padding>
                 </ScrollPane>
+                <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+                    <children>
+                        <Label text="Application log:"/>
+                        <Button mnemonicParsing="false" onAction="#buttonShowLogFileOnAction"
+                                text="Show the log file in explorer"/>
+                    </children>
+                </HBox>
             </children>
             <padding>
                 <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>

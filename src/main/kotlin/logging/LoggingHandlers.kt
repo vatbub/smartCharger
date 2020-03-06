@@ -23,6 +23,7 @@ package com.github.vatbub.smartcharge.logging
 import javafx.application.Platform
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
+import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.util.logging.*
@@ -58,14 +59,18 @@ object LoggingHandlers {
         if (newHandler != null) globalJDKLogger.addHandler(newHandler)
     }
 
-    private var internalFileHandler: Handler? = null
-    val fileHandler: Handler?
+    var currentLogFile: File? = null
+        private set
+    private var internalFileHandler: FileHandler? = null
+    val fileHandler: FileHandler?
         get() {
             if (internalFileHandler != null) return internalFileHandler
             synchronized(FileHandlerLock) {
                 if (internalFileHandler != null) return internalFileHandler
                 val logFilePathCopy = LoggingConfiguration.logFilePath
                         ?: return null
+                val finalLogLocation = LoggingConfiguration.combineLogFilePathAndName() ?: return null
+
                 try {
                     Files.createDirectories(logFilePathCopy.toPath())
                 } catch (e: IOException) {
@@ -73,7 +78,8 @@ object LoggingHandlers {
                     logger.warn("File logging disabled due to an IOException", e)
                 }
 
-                internalFileHandler = object : FileHandler(LoggingConfiguration.combineLogFilePathAndName()) {
+                currentLogFile = File(finalLogLocation)
+                internalFileHandler = object : FileHandler(finalLogLocation) {
                     override fun publish(record: LogRecord?) {
                         super.publish(record)
                         flush()
