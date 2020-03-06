@@ -23,6 +23,7 @@ import com.github.vatbub.smartcharge.ApplicationInstanceMessage.*
 import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
 import com.github.vatbub.smartcharge.Daemon.ChargerState.On
+import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
 import tk.pratanumandal.unique4j.Unique
 

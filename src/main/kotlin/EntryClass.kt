@@ -22,6 +22,9 @@ package com.github.vatbub.smartcharge
 import com.beust.jcommander.JCommander
 import com.github.vatbub.common.core.Common
 import com.github.vatbub.javaautostart.AutoStartManager
+import com.github.vatbub.smartcharge.logging.LoggingHandlers
+import com.github.vatbub.smartcharge.logging.exceptionHandler
+import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
@@ -57,7 +60,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
 
             Common.getInstance().appName = appId
             Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
-            initializeSystemOutAndErrCopy()
+            LoggingHandlers.initializeIfUninitialized()
 
             logger.info("Welcome to smartCharge!")
             val lockFlag = unique.acquireLock()

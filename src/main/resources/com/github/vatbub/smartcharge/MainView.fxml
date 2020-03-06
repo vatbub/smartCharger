@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.TextFlow?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8" fx:controller="com.github.vatbub.smartcharge.MainView">
     <children>
@@ -102,9 +103,20 @@
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
                 <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
-                <TextArea fx:id="logArea" editable="false" prefHeight="200.0" GridPane.columnSpan="2147483647"
-                          GridPane.rowIndex="11"/>
                 <Label text="Application log:" GridPane.rowIndex="10"/>
+                <ScrollPane fx:id="logScrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                            minHeight="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
+                    <content>
+                        <TextFlow fx:id="logTextFlow" maxHeight="1.7976931348623157E308"
+                                  maxWidth="1.7976931348623157E308" prefHeight="200.0"/>
+                    </content>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                    <padding>
+                        <Insets bottom="1.0" left="16.0" right="16.0" top="1.0"/>
+                    </padding>
+                </ScrollPane>
             </children>
             <padding>
                 <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>

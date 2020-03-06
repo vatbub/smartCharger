@@ -21,27 +21,27 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.javaautostart.AutoStartLaunchConfig
 import com.github.vatbub.smartcharge.ChargingMode.*
-import javafx.application.Platform
+import com.github.vatbub.smartcharge.logging.LoggingHandlers
+import com.github.vatbub.smartcharge.logging.logger
+import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import javafx.scene.text.TextFlow
 import org.apache.commons.lang3.exception.ExceptionUtils
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.URL
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class MainView {
 
-    var delayLogUpdatesAndSuppressErrorDialogs = false
-        set(value) {
-            field = value
-            if (!value)
-                updateLogView()
-        }
+    var delayLogUpdatesAndSuppressErrorDialogs by Delegates.observable(false) { _, _, newValue -> LoggingHandlers.TextFieldHandler.delayLogUpdates = newValue }
 
     @FXML
     private lateinit var resources: ResourceBundle
@@ -59,7 +59,10 @@ class MainView {
     private lateinit var textFieldStopEvent: TextField
 
     @FXML
-    private lateinit var logArea: TextArea
+    private lateinit var logTextFlow: TextFlow
+
+    @FXML
+    private lateinit var logScrollPane: ScrollPane
 
     @FXML
     private lateinit var toggleButtonChargeOptimized: ToggleButton
@@ -102,7 +105,8 @@ class MainView {
         assert(textFieldIFTTTMakerApiKey != null) { "fx:id=\"textFieldIFTTTMakerApiKey\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldMinPercentage != null) { "fx:id=\"textFieldMinPercentage\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldStopEvent != null) { "fx:id=\"textFieldStopEvent\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(logArea != null) { "fx:id=\"logArea\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(logTextFlow != null) { "fx:id=\"logTextFlow\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(logScrollPane != null) { "fx:id=\"logScrollPane\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonChargeOptimized != null) { "fx:id=\"toggleButtonChargeOptimized\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonChargeFull != null) { "fx:id=\"toggleButtonChargeFull\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(textFieldStartEvent != null) { "fx:id=\"textFieldStartEvent\" was not injected: check your FXML file 'MainView.fxml'." }
@@ -112,8 +116,13 @@ class MainView {
         assert(checkBoxAutoStart != null) { "fx:id=\"checkBoxAutoStart\" was not injected: check your FXML file 'MainView.fxml'." }
 
         updateGuiFromConfiguration()
-        updateLogView()
-        systemOutCopyStream.onContentAppend.add { _, appendedText -> updateLogView(appendedText) }
+        LoggingHandlers.TextFieldHandler.loggingTextFlow = logTextFlow
+        logTextFlow.children.addListener(
+                ListChangeListener<Node?> {
+                    logTextFlow.layout()
+                    logScrollPane.layout()
+                    logScrollPane.vvalue = 1.0
+                })
 
         textFieldIFTTTMakerApiKey.textProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
@@ -264,17 +273,6 @@ class MainView {
         toggleButtonStopCharging.isSelected = preferences[Keys.CurrentChargingMode] == AlwaysOff
 
         guiUpdateInProgress = false
-    }
-
-    private fun updateLogView(appendedText: String? = null) {
-        if (delayLogUpdatesAndSuppressErrorDialogs) return
-
-        if (appendedText == null) {
-            logArea.text = systemOutCopyStream.content
-            Platform.runLater { logArea.scrollTop = Double.MAX_VALUE }
-        } else {
-            logArea.appendText(appendedText)
-        }
     }
 
     fun showException(e: Throwable) {

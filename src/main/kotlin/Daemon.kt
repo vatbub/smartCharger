@@ -23,6 +23,8 @@ import com.github.vatbub.common.internet.Internet
 import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
 import com.github.vatbub.smartcharge.Daemon.ChargerState.On
+import com.github.vatbub.smartcharge.logging.exceptionHandler
+import com.github.vatbub.smartcharge.logging.logger
 import oshi.SystemInfo
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
