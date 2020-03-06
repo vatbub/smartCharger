@@ -88,6 +88,8 @@ object LoggingHandlers {
 
                 internalFileHandler!!.level = LoggingConfiguration.fileLogLevel
 
+                println("Saving the log file as '$finalLogLocation'")
+
                 return internalFileHandler
             }
         }
