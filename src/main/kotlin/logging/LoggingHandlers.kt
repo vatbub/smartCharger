@@ -40,6 +40,9 @@ object LoggingHandlers {
         if (handlersInitialized) return
         synchronized(InitLock) {
             if (handlersInitialized) return
+
+            globalJDKLogger.level = Level.ALL
+
             while (globalJDKLogger.handlers.isNotEmpty())
                 globalJDKLogger.removeHandler(globalJDKLogger.handlers[0])
 
