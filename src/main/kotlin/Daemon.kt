@@ -96,7 +96,7 @@ object Daemon {
                 } catch (e: Throwable) {
                     exceptionHandler(Thread.currentThread(), e)
                 }
-            }, 0, 10, TimeUnit.SECONDS)
+            }, 0, 1, TimeUnit.MINUTES)
 
             scheduledExecutorService = newExecutorService
         }
