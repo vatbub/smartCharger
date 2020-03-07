@@ -47,9 +47,9 @@ object Daemon {
         val powerSources = SystemInfo().hardware.powerSources
         var sourceIndex: Int? = null
 
-        logger.info("Reading power state...")
+        logger.debug("Reading power state...")
         powerSources.forEachIndexed { index, powerSource ->
-            logger.info("Power source info: name=${powerSource.name} remainingCapacity=${powerSource.remainingCapacity}")
+            logger.debug("Power source info: name=${powerSource.name} remainingCapacity=${powerSource.remainingCapacity}")
             if (powerSource.name.contains("battery", ignoreCase = true))
                 sourceIndex = index
         }
@@ -74,18 +74,17 @@ object Daemon {
 
         val apiKey = preferences[Keys.IFTTTMakerApiKey]
         if (apiKey.isBlank()) {
-            logger.warn("Cannot send the event to IFTTT due to an exception", IllegalArgumentException("IFTTT Maker api key not set. Please get your api key from https://ifttt.com/maker_webhooks/settings and set the setting iftttMakerKey to it. Type \\\"<programName> help\\\" to see more info."))
+            logger.error("Cannot send the event to IFTTT due to an exception", IllegalArgumentException("IFTTT Maker api key not set. Please get your api key from https://ifttt.com/maker_webhooks/settings and set the setting iftttMakerKey to it. Type \\\"<programName> help\\\" to see more info."))
             stop()
         }
 
         val result = Internet.sendEventToIFTTTMakerChannel(apiKey, eventName)
-        logger.info(result)
-        logger.info("Event successfully sent to IFTTT.")
+        logger.debug(result)
     }
 
     private fun start() {
         synchronized(Lock) {
-            logger.info("[DAEMON] Initializing optimized charging...")
+            logger.info("Initializing optimized charging...")
             val newExecutorService = Executors.newSingleThreadScheduledExecutor()
             newExecutorService.scheduleAtFixedRate({
                 try {
@@ -106,16 +105,16 @@ object Daemon {
     fun stop() {
         synchronized(Lock) {
             if (!isRunning) return
-            logger.info("[DAEMON] Shutting the daemon down...")
+            logger.info("Shutting the daemon down...")
             scheduledExecutorService?.shutdownNow()
         }
     }
 
     fun applyConfiguration() {
         if (isRunning)
-            logger.info("[DAEMON] Applying configuration changes...")
+            logger.info("Applying configuration changes...")
         else
-            logger.info("[DAEMON] Starting the daemon...")
+            logger.info("Starting the daemon...")
 
         stop()
 
