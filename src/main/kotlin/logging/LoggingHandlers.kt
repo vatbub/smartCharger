@@ -150,7 +150,7 @@ object LoggingHandlers {
                 try {
                     val textNode = Text(formatter.format(record))
                     textNode.style = if (record.level.intValue() >= Level.WARNING.intValue())
-                        "-fx-fill: RED;-fx - font - weight:bold;"
+                        "-fx-fill: RED;-fx-font-weight:bold;"
                     else
                         "-fx-fill: BLACK;-fx-font-weight:normal;"
 
