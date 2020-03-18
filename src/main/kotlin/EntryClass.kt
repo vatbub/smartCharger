@@ -99,7 +99,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
             if (shutdownActionsPerformed) return
             synchronized(ShutdownLock) {
                 if (shutdownActionsPerformed) return
-                Daemon.stop()
+                Daemon.prepareApplicationShutdown()
                 if (preferences[Keys.StopChargingOnShutdown] && !ignoreShutdownSetting) {
                     logger.info("Switching the charger off at shut down...")
                     Daemon.switchCharger(Daemon.ChargerState.Off)

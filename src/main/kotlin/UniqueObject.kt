@@ -53,6 +53,7 @@ private object MessageHelper {
             On -> SwitchChargerOn
             Off -> SwitchChargerOff
             null -> null
+            else -> throw IllegalArgumentException("Illegal argument value supplied for chargerState: $this, allowed values: On, Off")
         }
         if (chargerStateMessage != null)
             messages.add(chargerStateMessage)

@@ -21,55 +21,52 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.common.internet.Internet
 import com.github.vatbub.smartcharge.ChargingMode.*
-import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
-import com.github.vatbub.smartcharge.Daemon.ChargerState.On
+import com.github.vatbub.smartcharge.Daemon.ChargerState.*
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
-import oshi.SystemInfo
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 object Daemon {
-    private var scheduledExecutorService: ScheduledExecutorService? = null
+    private var periodicBatteryCheckExecutorService: ScheduledExecutorService? = null
+    private val stateVerificationExecutorService: ScheduledExecutorService by lazy { Executors.newSingleThreadScheduledExecutor() }
 
     @Suppress("MemberVisibilityCanBePrivate")
     val isRunning: Boolean
         get() {
             synchronized(Lock) {
-                return scheduledExecutorService != null
+                return periodicBatteryCheckExecutorService != null
             }
         }
 
     object Lock
 
-    private fun getCurrentBatteryPercentage(): Double {
-        val powerSources = SystemInfo().hardware.powerSources
-        var sourceIndex: Int? = null
+    var expectedChargerState: ChargerState = Unknown
+        private set
+    private var lastChargerStateVerificationFuture: Future<*>? = null
 
-        logger.debug("Reading power state...")
-        powerSources.forEachIndexed { index, powerSource ->
-            logger.debug("Power source info: name=${powerSource.name} remainingCapacity=${powerSource.remainingCapacity}")
-            if (powerSource.name.contains("battery", ignoreCase = true))
-                sourceIndex = index
-        }
-
-        if (sourceIndex == null)
-            throw IllegalStateException("This computer does not seem to have a battery. If you think this is an error, please send the log output to the project maintainers.")
-
-        return powerSources[sourceIndex!!].remainingCapacity * 100
-    }
 
     enum class ChargerState {
-        On, Off
+        On, Off, Unknown
+    }
+
+    private fun verifyChargerState() {
+        if (expectedChargerState == Unknown) return
+        val currentChargerState = BatteryInfo.currentChargerState
+        if (expectedChargerState != currentChargerState)
+            logger.warn("Please verify that your charger is working. Your charger is $currentChargerState but should be $expectedChargerState")
     }
 
     fun switchCharger(newChargerState: ChargerState) {
         logger.info("Switching the charger ${newChargerState.toString().toLowerCase()}...")
 
+        expectedChargerState = newChargerState
         val eventName = when (newChargerState) {
             On -> preferences[Keys.IFTTTStartChargingEventName]
             Off -> preferences[Keys.IFTTTStopChargingEventName]
+            else -> throw IllegalArgumentException("Illegal argument value supplied for nwChargerState: $this, allowed values: On, Off")
         }
 
         val apiKey = preferences[Keys.IFTTTMakerApiKey]
@@ -79,6 +76,8 @@ object Daemon {
         }
 
         val result = Internet.sendEventToIFTTTMakerChannel(apiKey, eventName)
+        lastChargerStateVerificationFuture?.cancel(false)
+        lastChargerStateVerificationFuture = stateVerificationExecutorService.schedule(this::verifyChargerState, 1, TimeUnit.MINUTES)
         logger.debug(result)
     }
 
@@ -88,7 +87,7 @@ object Daemon {
             val newExecutorService = Executors.newSingleThreadScheduledExecutor()
             newExecutorService.scheduleAtFixedRate({
                 try {
-                    val percentage = getCurrentBatteryPercentage()
+                    val percentage = BatteryInfo.currentPercentage
                     if (percentage <= preferences[Keys.MinPercentage].toDouble())
                         switchCharger(On)
                     else if (percentage >= preferences[Keys.MaxPercentage].toDouble())
@@ -98,7 +97,14 @@ object Daemon {
                 }
             }, 0, 1, TimeUnit.MINUTES)
 
-            scheduledExecutorService = newExecutorService
+            periodicBatteryCheckExecutorService = newExecutorService
+        }
+    }
+
+    fun prepareApplicationShutdown() {
+        synchronized(Lock) {
+            stop()
+            stateVerificationExecutorService.shutdownNow()
         }
     }
 
@@ -106,7 +112,7 @@ object Daemon {
         synchronized(Lock) {
             if (!isRunning) return
             logger.info("Shutting the daemon down...")
-            scheduledExecutorService?.shutdownNow()
+            periodicBatteryCheckExecutorService?.shutdownNow()
         }
     }
 
