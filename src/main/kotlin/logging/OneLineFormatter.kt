@@ -20,12 +20,17 @@
 package com.github.vatbub.smartcharge.logging
 
 import org.apache.commons.lang.exception.ExceptionUtils
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.logging.LogRecord
 import java.util.logging.SimpleFormatter
 
 class OneLineFormatter : SimpleFormatter() {
+    private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+
     override fun format(record: LogRecord): String? {
-        val res = StringBuilder("[${record.level}] ${record.message}\r\n")
+        val timestamp = Date(record.millis)
+        val res = StringBuilder("[${record.level}] [${dateFormat.format(timestamp)}] ${record.message}\r\n")
         if (record.thrown != null)  // An exception is associated with the record
             res.append("${ExceptionUtils.getStackTrace(record.thrown)}\r\n")
         return res.toString()
