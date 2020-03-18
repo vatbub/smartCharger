@@ -84,7 +84,7 @@ object Daemon {
 
     private fun start() {
         synchronized(Lock) {
-            logger.info("Initializing optimized charging...")
+            logger.info("Starting the daemon, initializing optimized charging...")
             val newExecutorService = Executors.newSingleThreadScheduledExecutor()
             newExecutorService.scheduleAtFixedRate({
                 try {
