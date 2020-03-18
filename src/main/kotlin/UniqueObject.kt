@@ -25,7 +25,7 @@ import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
 import com.github.vatbub.smartcharge.Daemon.ChargerState.On
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
-import tk.pratanumandal.unique4j.Unique
+import tk.pratanumandal.unique4j.Unique4j
 
 private enum class ApplicationInstanceMessage {
     ShowGui, ModeFull, ModeOptimized, ModeNoCharge, SwitchChargerOn, SwitchChargerOff
@@ -69,7 +69,7 @@ private object MessageHelper {
     }
 }
 
-val unique = object : Unique(appId) {
+val unique = object : Unique4j(appId) {
     override fun sendMessage(): String {
         logger.warn("Another instance is already running, passing arguments to other instance...")
         return MessageHelper.buildMessage()
