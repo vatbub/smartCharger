@@ -22,6 +22,7 @@ package com.github.vatbub.smartcharge
 import com.beust.jcommander.JCommander
 import com.github.vatbub.common.core.Common
 import com.github.vatbub.javaautostart.AutoStartManager
+import com.github.vatbub.smartcharge.ShutdownHelper.preventShutdown
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
@@ -165,6 +166,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
     fun showMainView() {
         val stage = currentStage ?: return
         stage.show()
+        stage.preventShutdown("Hello test reason")
         stage.isIconified = false
         controllerInstance?.delayLogUpdatesAndSuppressErrorDialogs = false
     }
