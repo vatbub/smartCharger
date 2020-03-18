@@ -36,10 +36,10 @@ object BatteryInfo {
         get() {
             logger.debug("Reading power charging state...")
             return if (powerSources.any { it.isPowerOnLine }) {
-                logger.info("Computer is connected to power.")
+                logger.debug("Computer is connected to power.")
                 Daemon.ChargerState.On
             } else {
-                logger.info("Computer is not connected to power.")
+                logger.debug("Computer is not connected to power.")
                 Daemon.ChargerState.Off
             }
         }
@@ -56,7 +56,7 @@ object BatteryInfo {
             }
 
             val percentage = 100.0 * totalCurrentCharge / totalMaxCapacity
-            logger.info("Current total capacity: $percentage")
+            logger.debug("Current total capacity: $percentage")
             return percentage
         }
 }
