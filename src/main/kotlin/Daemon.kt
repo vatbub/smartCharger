@@ -31,7 +31,10 @@ import java.util.concurrent.TimeUnit
 
 object Daemon {
     private var periodicBatteryCheckExecutorService: ScheduledExecutorService? = null
-    private val stateVerificationExecutorService: ScheduledExecutorService by lazy { Executors.newSingleThreadScheduledExecutor() }
+    private val stateVerificationExecutorService: ScheduledExecutorService by lazy {
+        logger.debug("Starting the state verification executor service...")
+        Executors.newSingleThreadScheduledExecutor()
+    }
 
     @Suppress("MemberVisibilityCanBePrivate")
     val isRunning: Boolean
@@ -104,6 +107,7 @@ object Daemon {
     fun prepareApplicationShutdown() {
         synchronized(Lock) {
             stop()
+            logger.debug("Shutting the state verification executor service down...")
             stateVerificationExecutorService.shutdownNow()
         }
     }
