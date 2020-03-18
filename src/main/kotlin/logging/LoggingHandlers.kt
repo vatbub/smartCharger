@@ -20,9 +20,12 @@
 
 package com.github.vatbub.smartcharge.logging
 
+import com.github.vatbub.smartcharge.EntryClass
+import com.github.vatbub.smartcharge.SystemTrayManager
 import javafx.application.Platform
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
+import java.awt.TrayIcon
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -48,6 +51,8 @@ object LoggingHandlers {
 
             globalJDKLogger.addHandler(consoleHandler)
             globalJDKLogger.addHandler(TextFieldHandler)
+            globalJDKLogger.addHandler(SystemTrayHandler)
+            globalJDKLogger.addHandler(GuiErrorMessageHandler)
             reinitializeFileHandler()
 
             handlersInitialized = true
@@ -166,6 +171,51 @@ object LoggingHandlers {
                     reportError(null, e, ErrorManager.FORMAT_FAILURE)
                 }
             }
+        }
+
+        override fun flush() {}
+
+        override fun close() {}
+
+    }
+
+    object SystemTrayHandler : Handler() {
+        init {
+            this.level = LoggingConfiguration.trayLogLevel
+            this.formatter = SystemTrayFormatter()
+        }
+
+        override fun publish(record: LogRecord?) {
+            if (record == null) return
+            if (record.level.intValue() < this.level.intValue()) return
+
+            val messageType = when (record.level) {
+                Level.CONFIG -> TrayIcon.MessageType.NONE
+                Level.INFO -> TrayIcon.MessageType.INFO
+                Level.WARNING -> TrayIcon.MessageType.WARNING
+                Level.SEVERE -> TrayIcon.MessageType.ERROR
+                else -> TrayIcon.MessageType.NONE
+            }
+            SystemTrayManager.showTrayMessage("Smart charge", formatter.format(record), messageType)
+        }
+
+        override fun flush() {}
+
+        override fun close() {}
+
+    }
+
+    object GuiErrorMessageHandler : Handler() {
+        init {
+            this.level = LoggingConfiguration.guiErrorMessageLogLevel
+        }
+
+        override fun publish(record: LogRecord?) {
+            if (record == null) return
+            if (record.level.intValue() < this.level.intValue()) return
+
+            if (EntryClass.instance != null)
+                Platform.runLater { EntryClass.instance?.controllerInstance?.showException(record) }
         }
 
         override fun flush() {}

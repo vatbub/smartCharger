@@ -22,6 +22,7 @@ package com.github.vatbub.smartcharge.logging
 import org.apache.commons.lang.exception.ExceptionUtils
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.SimpleFormatter
 
@@ -34,5 +35,24 @@ class OneLineFormatter : SimpleFormatter() {
         if (record.thrown != null)  // An exception is associated with the record
             res.append("${ExceptionUtils.getStackTrace(record.thrown)}\r\n")
         return res.toString()
+    }
+}
+
+class SystemTrayFormatter : SimpleFormatter() {
+    override fun format(record: LogRecord?): String {
+        if (record == null) return ""
+        val messageText = when (record.level) {
+            Level.CONFIG -> StringBuilder("Configuration message: ")
+            Level.INFO -> StringBuilder("Info message: ")
+            Level.WARNING -> StringBuilder("Warning message: ")
+            Level.SEVERE -> StringBuilder("An error occurred: ")
+            else -> StringBuilder("Log message: ")
+        }
+        messageText.append(record.message)
+
+        val throwable = record.thrown
+        if (throwable != null)
+            messageText.append("\n${throwable.javaClass.name}: ${throwable.localizedMessage}")
+        return messageText.toString()
     }
 }

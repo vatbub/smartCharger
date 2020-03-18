@@ -37,6 +37,8 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.URL
 import java.util.*
+import java.util.logging.Level
+import java.util.logging.LogRecord
 import kotlin.properties.Delegates
 
 
@@ -163,7 +165,6 @@ class MainView {
             } catch (e: NumberFormatException) {
                 logger.warn("Invalid user input for MinPercentage: $newValue")
                 textFieldMinPercentage.text = oldValue
-                throw e
             }
             Daemon.applyConfiguration()
         }
@@ -282,39 +283,56 @@ class MainView {
         guiUpdateInProgress = false
     }
 
-    fun showException(e: Throwable) {
+    fun showException(record: LogRecord) {
         if (delayLogUpdatesAndSuppressErrorDialogs) return
 
         val alert = Alert(Alert.AlertType.ERROR)
-        alert.title = "SmartCharge: Exception"
-        alert.headerText = "An exception occurred."
-
-        val rootCause = ExceptionUtils.getRootCause(e)!!
-
-        alert.contentText = "${rootCause.javaClass.name}: ${rootCause.message}"
-
-        val stringWriter = StringWriter()
-        e.printStackTrace(PrintWriter(stringWriter))
-
-        val label = Label("The stacktrace was:")
-        val textArea = TextArea(stringWriter.toString())
-        with(textArea) {
-            isWrapText = false
-            isEditable = false
-            maxWidth = Double.MAX_VALUE
-            maxHeight = Double.MAX_VALUE
+        alert.title = when (record.level) {
+            Level.CONFIG -> "SmartCharge: Configuration message"
+            Level.INFO -> "SmartCharge: Information"
+            Level.WARNING -> "SmartCharge: Warning"
+            Level.SEVERE -> "SmartCharge: Error"
+            else -> "SmartCharge: Information"
         }
-        GridPane.setVgrow(textArea, Priority.ALWAYS)
-        GridPane.setHgrow(textArea, Priority.ALWAYS)
-
-        val expandableContent = GridPane()
-        with(expandableContent) {
-            maxWidth = Double.MAX_VALUE
-            add(label, 0, 0)
-            add(textArea, 0, 1)
+        alert.headerText = when (record.level) {
+            Level.CONFIG -> "Configuration message."
+            Level.INFO -> "Information"
+            Level.WARNING -> "A warning occurred."
+            Level.SEVERE -> "An error occurred."
+            else -> "Information"
         }
 
-        alert.dialogPane.expandableContent = expandableContent
+        val throwable = record.thrown
+        val rootCause = if (throwable == null) null else ExceptionUtils.getRootCause(throwable)!!
+
+        val contentTextBuilder = StringBuilder(record.message)
+        if (rootCause != null) {
+            contentTextBuilder.append("${rootCause.javaClass.name}: ${rootCause.message}")
+            val stringWriter = StringWriter()
+            rootCause.printStackTrace(PrintWriter(stringWriter))
+
+            val label = Label("The stacktrace was:")
+            val textArea = TextArea(stringWriter.toString())
+            with(textArea) {
+                isWrapText = false
+                isEditable = false
+                maxWidth = Double.MAX_VALUE
+                maxHeight = Double.MAX_VALUE
+            }
+            GridPane.setVgrow(textArea, Priority.ALWAYS)
+            GridPane.setHgrow(textArea, Priority.ALWAYS)
+
+            val expandableContent = GridPane()
+            with(expandableContent) {
+                maxWidth = Double.MAX_VALUE
+                add(label, 0, 0)
+                add(textArea, 0, 1)
+            }
+
+            alert.dialogPane.expandableContent = expandableContent
+        }
+
+        alert.contentText = contentTextBuilder.toString()
 
         alert.show()
     }

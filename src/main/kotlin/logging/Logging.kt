@@ -19,12 +19,8 @@
  */
 package com.github.vatbub.smartcharge.logging
 
-import com.github.vatbub.smartcharge.EntryClass
-import com.github.vatbub.smartcharge.SystemTrayManager
-import javafx.application.Platform
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.TrayIcon
 
 val logger by lazy {
     LoggingHandlers.initializeIfUninitialized()
@@ -38,8 +34,5 @@ val Any.logger: Logger
     }
 
 val exceptionHandler = { thread: Thread, throwable: Throwable ->
-    logger.error("Exception in thread ${thread.name}. Type \\\"<programName> help\\\" to see more info.", throwable)
-    if (EntryClass.instance != null)
-        Platform.runLater { EntryClass.instance?.controllerInstance?.showException(throwable) }
-    SystemTrayManager.showTrayMessage("Smart charge", "An exception occurred: ${throwable.javaClass.name}: ${throwable.localizedMessage}", TrayIcon.MessageType.ERROR)
+    logger.error("Exception in thread ${thread.name}.", throwable)
 }

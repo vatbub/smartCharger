@@ -28,6 +28,8 @@ object LoggingConfiguration {
     var fileLogLevel: Level by Delegates.observable(Level.ALL) { _, _, newValue -> LoggingHandlers.fileHandler?.level = newValue }
     var consoleLogLevel: Level by Delegates.observable(Level.INFO) { _, _, newValue -> LoggingHandlers.consoleHandler.level = newValue }
     var textFieldLogLevel: Level by Delegates.observable(Level.INFO) { _, _, newValue -> LoggingHandlers.TextFieldHandler.level = newValue }
+    var trayLogLevel: Level by Delegates.observable(Level.WARNING) { _, _, newValue -> LoggingHandlers.SystemTrayHandler.level = newValue }
+    var guiErrorMessageLogLevel: Level by Delegates.observable(Level.WARNING) { _, _, newValue -> LoggingHandlers.GuiErrorMessageHandler.level = newValue }
     var logFilePath: File? by Delegates.observable(Common.getInstance().tryGetAndCreateAppDataPathAsFile()?.toPath()?.resolve("Logs")?.toFile()) { _, _, _ -> LoggingHandlers.reinitializeFileHandler() }
     var logFileName by Delegates.observable("log_" + Common.getInstance().appName + "_DateTime.xml") { _, _, _ -> LoggingHandlers.reinitializeFileHandler() }
 
