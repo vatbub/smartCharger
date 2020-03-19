@@ -38,6 +38,7 @@
                     <children>
                         <TextField fx:id="textFieldIFTTTMakerApiKey" promptText="e. g. e9763gf7gez9e_gd769wh"
                                    HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#buttonLogIn" text="Log in to IFTTT"/>
                         <Button mnemonicParsing="false" onAction="#buttonHelpApiKeyOnAction" text="What's that?"/>
                     </children>
                 </HBox>

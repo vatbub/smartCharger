@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="671.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <VBox layoutY="58.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <StackPane>
+               <children>
+                  <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               prefWidth="200.0" progress="0.0" visible="false"/>
+                  <Label fx:id="urlLabel" maxWidth="1.7976931348623157E308" text="No URL loaded." HBox.hgrow="ALWAYS"
+                         VBox.vgrow="NEVER">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                     </padding>
+                  </Label>
+               </children>
+            </StackPane>
+            <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

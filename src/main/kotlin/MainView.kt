@@ -91,6 +91,15 @@ class MainView {
     private var guiUpdateInProgress = false
 
     @FXML
+    fun buttonLogIn(event: ActionEvent?) {
+        LogInView("https://ifttt.com/maker_webhooks/settings", "https://ifttt.com/") { apiKey ->
+            logger.info("Log in to IFTTT successful")
+            textFieldIFTTTMakerApiKey.text = apiKey
+            true
+        }
+    }
+
+    @FXML
     fun buttonHelpApiKeyOnAction(event: ActionEvent?) {
     }
 
