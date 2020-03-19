@@ -80,7 +80,7 @@ object Daemon {
 
         val result = Internet.sendEventToIFTTTMakerChannel(apiKey, eventName)
         lastChargerStateVerificationFuture?.cancel(false)
-        lastChargerStateVerificationFuture = stateVerificationExecutorService.schedule(this::verifyChargerState, 1, TimeUnit.MINUTES)
+        lastChargerStateVerificationFuture = stateVerificationExecutorService.schedule(this::verifyChargerState, 30, TimeUnit.SECONDS)
         logger.debug(result)
     }
 
