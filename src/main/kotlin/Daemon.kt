@@ -76,6 +76,7 @@ object Daemon {
         if (apiKey.isBlank()) {
             logger.error("Cannot send the event to IFTTT due to an exception", IllegalArgumentException("IFTTT Maker api key not set. Please get your api key from https://ifttt.com/maker_webhooks/settings and set the setting iftttMakerKey to it. Type \\\"<programName> help\\\" to see more info."))
             stop()
+            return
         }
 
         val result = Internet.sendEventToIFTTTMakerChannel(apiKey, eventName)
