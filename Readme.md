@@ -20,7 +20,7 @@ We are working on a better solution, but for now, you need to...
 1. Meet the prerequisites mentioned under [Compilation prerequisites](#compilation-prerequisites).
 2. Clone this repository.
 3. Open a shell and run `mvn package`
-You will find the compiled jar under `target/smartCharger-1.0-SNAPSHOT-javadoc.jar`.
+You will find the compiled jar under `target/smartCharger-1.0-SNAPSHOT-jar-with-dependencies.jar`.
 
 ## Runtime prerequisites
 - Java JRE 8 or later
