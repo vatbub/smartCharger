@@ -56,7 +56,7 @@
     <parent>
         <groupId>com.github.vatbub</groupId>
         <artifactId>kotlinParentPom</artifactId>
-        <version>0.0.5-SNAPSHOT</version>
+        <version>0.0.6-SNAPSHOT</version>
     </parent>
 
     <name>Smart Charge</name>
