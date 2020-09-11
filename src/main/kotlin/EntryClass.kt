@@ -37,6 +37,7 @@ import java.awt.TrayIcon
 import kotlin.system.exitProcess
 
 const val appId = "com.github.vatbub.smartCharge"
+const val scheduledTaskName = "Smart Charge Before Shutdown Hook"
 
 class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) : Application() {
     companion object {
@@ -45,6 +46,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
         var instance: EntryClass? = null
         private var shutdownActionsPerformed = false
         val autoStartManager = if (SystemUtils.IS_OS_WINDOWS) AutoStartManager(appId) else null
+        val taskSchedulerManager = if (SystemUtils.IS_OS_WINDOWS) TaskSchedulerManager(scheduledTaskName) else null
 
         private object ShutdownLock
 
@@ -100,7 +102,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
             synchronized(ShutdownLock) {
                 if (shutdownActionsPerformed) return
                 Daemon.prepareApplicationShutdown()
-                if (preferences[Keys.StopChargingOnShutdown] && !ignoreShutdownSetting) {
+                if (!ignoreShutdownSetting && taskSchedulerManager != null && taskSchedulerManager.taskExists()) {
                     logger.info("Switching the charger off at shut down...")
                     Daemon.switchCharger(Daemon.ChargerState.Off)
                 }

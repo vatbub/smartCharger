@@ -34,7 +34,6 @@ object Keys {
     object IFTTTStopChargingEventName : Key<String>("iftttStopChargingEventName", "laptopStopCharging", { it }, { it })
     object MinPercentage : Key<Double>("minPercentage", 25.0, { it.toDouble() }, { it.toString() })
     object MaxPercentage : Key<Double>("maxPercentage", 80.0, { it.toDouble() }, { it.toString() })
-    object StopChargingOnShutdown : Key<Boolean>("stopChargingOnShutdown", true, { it.toBoolean() }, { it.toString() })
     object CurrentChargingMode : Key<ChargingMode>("currentChargingMode", Optimized, { ChargingMode.valueOf(it) }, { it.toString() })
     object TrayMessageShown : Key<Boolean>("trayMessageShown", false, { it.toBoolean() }, { it.toString() })
 }

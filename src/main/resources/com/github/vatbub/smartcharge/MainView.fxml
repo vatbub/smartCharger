@@ -104,9 +104,9 @@
                                       textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2"/>
                     </children>
                 </GridPane>
-                <CheckBox fx:id="checkBoxStopChargingOnShutdown" disable="true" mnemonicParsing="false"
-                          text="Stop charging when I shut the computer down (hang tight, we're working on fixing this function)"
-                          wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
+                <CheckBox fx:id="checkBoxStopChargingOnShutdown" mnemonicParsing="false"
+                          text="Stop charging when I shut the computer down" wrapText="true"
+                          GridPane.columnSpan="2147483647" GridPane.rowIndex="6"/>
                 <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
                 <ScrollPane fx:id="logScrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"

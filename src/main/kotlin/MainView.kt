@@ -196,13 +196,28 @@ class MainView {
 
         checkBoxStopChargingOnShutdown.selectedProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            preferences[Keys.StopChargingOnShutdown] = newValue
+            val taskSchedulerManager = EntryClass.taskSchedulerManager
+            if (taskSchedulerManager == null) {
+                updateGuiFromConfiguration()
+                return@addListener
+            }
+
+            if (newValue) {
+                taskSchedulerManager.createOnEventTask(
+                        launchConfig = AutoStartLaunchConfig(additionalArgs = "--noGui --noDaemon --switch Off"),
+                        eventChannel = "System",
+                        eventName = "System[(EventID=1074)]"
+                )
+            } else {
+                taskSchedulerManager.deleteTask()
+            }
+
             updateGuiFromConfiguration()
         }
 
         checkBoxAutoStart.selectedProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
-            val autoStartManager = EntryClass.autoStartManager!!
+            val autoStartManager = EntryClass.autoStartManager ?: return@addListener
             if (newValue)
                 autoStartManager.addToAutoStart(AutoStartLaunchConfig(additionalArgs = "--noGui"))
             else
@@ -274,7 +289,14 @@ class MainView {
             textFieldMaxPercentage.promptText = preferences[Keys.MaxPercentage].toString()
         }
 
-        checkBoxStopChargingOnShutdown.isSelected = preferences[Keys.StopChargingOnShutdown]
+        val taskSchedulerManager = EntryClass.taskSchedulerManager
+        if (taskSchedulerManager == null) {
+            checkBoxStopChargingOnShutdown.isSelected = false
+            checkBoxStopChargingOnShutdown.isDisable = true
+        } else {
+            checkBoxStopChargingOnShutdown.isDisable = false
+            checkBoxStopChargingOnShutdown.isSelected = taskSchedulerManager.taskExists()
+        }
 
         val autoStartManager = EntryClass.autoStartManager
         if (autoStartManager == null) {
