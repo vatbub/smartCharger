@@ -19,7 +19,7 @@
  */
 package com.github.vatbub.smartcharge.logging
 
-import org.apache.commons.lang.exception.ExceptionUtils
+import org.apache.commons.lang3.exception.ExceptionUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.Level

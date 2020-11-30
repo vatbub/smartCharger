@@ -68,7 +68,7 @@
     <properties>
         <gitRepoName>smartCharge</gitRepoName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.github.vatbub.smartcharge.EntryClass</mainClass>
+        <mainClass>com.github.vatbub.smartcharge.MainKt</mainClass>
         <slf4j.version>1.7.30</slf4j.version>
         <jna.version>5.5.0</jna.version>
         <javafx.version>14.0.2.1</javafx.version>
@@ -112,16 +112,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.vatbub</groupId>
-            <artifactId>common.core</artifactId>
-            <version>0.1.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.vatbub</groupId>
-            <artifactId>common.internet</artifactId>
-            <version>0.1.6-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -130,6 +120,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>
@@ -214,6 +209,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>

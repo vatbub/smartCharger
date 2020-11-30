@@ -19,9 +19,9 @@
  */
 package com.github.vatbub.smartcharge
 
-import com.github.vatbub.common.internet.Internet
 import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.Daemon.ChargerState.*
+import com.github.vatbub.smartcharge.ifttt.IftttMakerChannel
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
 import java.util.concurrent.Executors
@@ -79,11 +79,11 @@ object Daemon {
             return
         }
 
-        val result = Internet.sendEventToIFTTTMakerChannel(apiKey, eventName)
+        val result = IftttMakerChannel(apiKey).sendEvent(eventName)
         lastChargerStateVerificationFuture?.cancel(false)
         if (!stateVerificationExecutorService.isShutdown)
             lastChargerStateVerificationFuture = stateVerificationExecutorService.schedule(this::verifyChargerState, 30, TimeUnit.SECONDS)
-        logger.debug(result)
+        logger.debug(result.responseText)
     }
 
     private fun start() {

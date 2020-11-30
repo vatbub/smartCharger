@@ -33,7 +33,6 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextFlow
 import org.apache.commons.lang3.exception.ExceptionUtils
-import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.URL
 import java.util.*
@@ -340,7 +339,7 @@ class MainView {
         if (rootCause != null) {
             contentTextBuilder.append("${rootCause.javaClass.name}: ${rootCause.message}")
             val stringWriter = StringWriter()
-            rootCause.printStackTrace(PrintWriter(stringWriter))
+            stringWriter.write(rootCause.stackTraceToString())
 
             val label = Label("The stacktrace was:")
             val textArea = TextArea(stringWriter.toString())

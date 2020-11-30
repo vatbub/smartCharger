@@ -20,7 +20,6 @@
 package com.github.vatbub.smartcharge
 
 import com.beust.jcommander.JCommander
-import com.github.vatbub.common.core.Common
 import com.github.vatbub.javaautostart.AutoStartManager
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.exceptionHandler
@@ -50,8 +49,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
 
         private object ShutdownLock
 
-        @JvmStatic
-        fun main(vararg args: String) {
+        fun actualMain(vararg args: String) {
             startupArgs = args
             val jCommander = JCommander(commandLineArgs)
             jCommander.parse(*args)
@@ -60,7 +58,6 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
                 exitProcess(1)
             }
 
-            Common.getInstance().appName = appId
             Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
             LoggingHandlers.initializeIfUninitialized()
 

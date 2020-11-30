@@ -20,13 +20,12 @@
 
 package com.github.vatbub.smartcharge
 
-import com.github.vatbub.common.core.Common
 import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.smartcharge.ChargingMode.Optimized
 
-val preferences = Preferences(PropertiesFileKeyValueProvider(Common.getInstance().andCreateAppDataPathAsFile.toPath().resolve("settings.properties").toFile()))
+val preferences = Preferences(PropertiesFileKeyValueProvider(appDataFolder.resolve("settings.properties")))
 
 object Keys {
     object IFTTTMakerApiKey : Key<String>("iftttMakerKey", "", { it }, { it })
