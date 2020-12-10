@@ -21,6 +21,7 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.GuiHelper.showMainView
+import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
 import java.awt.*
 
@@ -123,6 +124,9 @@ object SystemTrayManager {
         trayIcon?.displayMessage(caption, text, messageType)
     }
 
-    private fun updateMainView() =
-            Platform.runLater { EntryClass.instance?.controllerInstance?.updateGuiFromConfiguration() }
+    private fun updateMainView() = try {
+        Platform.runLater { EntryClass.instance?.controllerInstance?.updateGuiFromConfiguration() }
+    } catch (e: IllegalStateException) {
+        logger.debug("Cannot update UI state because JavaFX is not initialized", e)
+    }
 }
