@@ -17,8 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.apps
+package com.github.vatbub.smartcharge.profiles
 
-interface Matcher<T> {
-    fun matches(obj: T): Boolean
+import org.w3c.dom.Element
+
+data class ApplicationStatusMatcher(val requirement: ApplicationStatus) : Matcher<ApplicationStatus> {
+    override fun matches(obj: ApplicationStatus): Boolean = obj == requirement
+
+    companion object : MatcherCompanion<ApplicationStatus, ApplicationStatusMatcher> {
+        override fun fromXml(matcherElement: Element) = ApplicationStatusMatcher(
+            ApplicationStatus.valueOf(matcherElement.getAttribute("requirement"))
+        )
+    }
 }

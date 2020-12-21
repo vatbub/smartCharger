@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.apps
+package com.github.vatbub.smartcharge.profiles
 
 import java.nio.charset.Charset
 import kotlin.time.*

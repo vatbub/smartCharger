@@ -17,7 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.apps
+package com.github.vatbub.smartcharge.profiles
+
+import org.w3c.dom.Element
 
 sealed class IntMatcher : Matcher<Int> {
     data class EqualsMatcher(val requirement: Int) : IntMatcher() {
@@ -42,5 +44,22 @@ sealed class IntMatcher : Matcher<Int> {
 
     data class BetweenMatcher(val requirement: IntRange) : IntMatcher() {
         override fun matches(obj: Int): Boolean = obj in requirement
+    }
+
+    companion object : MatcherCompanion<Int, IntMatcher> {
+        override fun fromXml(matcherElement: Element): IntMatcher {
+            return when (val subtype = matcherElement.getAttribute("subtype")) {
+                "Equals" -> EqualsMatcher(matcherElement.getAttribute("requirement").toInt())
+                "Lower" -> LowerMatcher(matcherElement.getAttribute("requirement").toInt())
+                "LowerOrEquals" -> LowerOrEqualsMatcher(matcherElement.getAttribute("requirement").toInt())
+                "Greater" -> GreaterMatcher(matcherElement.getAttribute("requirement").toInt())
+                "GreaterOrEquals" -> GreaterOrEqualsMatcher(matcherElement.getAttribute("requirement").toInt())
+                "Between" -> BetweenMatcher(
+                    matcherElement.getAttribute("lowerRequirement").toInt()..
+                            matcherElement.getAttribute("higherRequirement").toInt()
+                )
+                else -> throw IllegalArgumentException("IntMatcher subtype $subtype unknown")
+            }
+        }
     }
 }

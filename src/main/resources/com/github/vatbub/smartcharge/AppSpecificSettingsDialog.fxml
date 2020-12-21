@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.vatbub.smartcharge.AppSpecificSettingsDialog">
+    <children>
+        <VBox layoutY="46.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <ToolBar>
+                    <items>
+                        <Button mnemonicParsing="false" onAction="#buttonAdd" text="Add application"/>
+                    </items>
+                </ToolBar>
+                <TableView fx:id="tableViewApplicationList" layoutX="222.0" layoutY="46.0"
+                           maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="354.0"
+                           prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="columnApplication" maxWidth="1.7976931348623157E308" minWidth="200.0"
+                                     prefWidth="-1.0" text="Application"/>
+                        <TableColumn fx:id="columnMode" maxWidth="-Infinity" minWidth="100.0" prefWidth="-1.0"
+                                     resizable="false" text="Mode"/>
+                        <TableColumn fx:id="columnEdit" maxWidth="-Infinity" minWidth="40.0" prefWidth="-1.0"
+                                     resizable="false" text="Edit"/>
+                        <TableColumn fx:id="deleteColumn" maxWidth="-Infinity" minWidth="50.0" prefWidth="-1.0"
+                                     resizable="false" text="Delete"/>
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

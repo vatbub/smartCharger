@@ -19,6 +19,8 @@
  */
 package com.github.vatbub.smartcharge.apps
 
+import com.github.vatbub.smartcharge.profiles.RunningApplication
+import com.github.vatbub.smartcharge.profiles.getRunningApps
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.time.ExperimentalTime

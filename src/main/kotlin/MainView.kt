@@ -30,6 +30,7 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextFlow
 import org.apache.commons.lang3.exception.ExceptionUtils
@@ -87,6 +88,21 @@ class MainView {
     @FXML
     private lateinit var checkBoxAutoStart: CheckBox
 
+    @FXML
+    private lateinit var checkBoxAppSpecificSettings: CheckBox
+
+    @FXML
+    private lateinit var textBoxOverrideAppSpecificSettingsTimeInMinutes: TextField
+
+    @FXML
+    private lateinit var buttonChangeAppSpecificSettings: Button
+
+    @FXML
+    private lateinit var hBoxOverrideAppSpecificSettings: HBox
+
+    @FXML
+    private lateinit var buttonApplyOverrideForAppSpecificSettings: Button
+
     private var guiUpdateInProgress = false
 
     @FXML
@@ -96,6 +112,14 @@ class MainView {
             textFieldIFTTTMakerApiKey.text = apiKey
             true
         }
+    }
+
+    @FXML
+    fun buttonChangeAppSpecificSettingsOnAction(event: ActionEvent?) {
+    }
+
+    @FXML
+    fun buttonApplyOverrideForAppSpecificSettingsOnAction(event: ActionEvent?) {
     }
 
     @FXML
@@ -131,15 +155,20 @@ class MainView {
         assert(checkBoxStopChargingOnShutdown != null) { "fx:id=\"checkBoxStopChargingOnShutdown\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonStopCharging != null) { "fx:id=\"toggleButtonStopCharging\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(checkBoxAutoStart != null) { "fx:id=\"checkBoxAutoStart\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(checkBoxAppSpecificSettings != null) { "fx:id=\"checkBoxAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(textBoxOverrideAppSpecificSettingsTimeInMinutes != null) { "fx:id=\"textBoxOverrideAppSpecificSettingsTimeInMinutes\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(buttonChangeAppSpecificSettings != null) { "fx:id=\"buttonChangeAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(hBoxOverrideAppSpecificSettings != null) { "fx:id=\"hBoxOverrideAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(buttonApplyOverrideForAppSpecificSettings != null) { "fx:id=\"buttonApplyOverrideForAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
 
         updateGuiFromConfiguration()
         LoggingHandlers.TextFieldHandler.loggingTextFlow = logTextFlow
         logTextFlow.children.addListener(
-                ListChangeListener<Node?> {
-                    logTextFlow.layout()
-                    logScrollPane.layout()
-                    logScrollPane.vvalue = 1.0
-                })
+            ListChangeListener<Node?> {
+                logTextFlow.layout()
+                logScrollPane.layout()
+                logScrollPane.vvalue = 1.0
+            })
 
         textFieldIFTTTMakerApiKey.textProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
@@ -221,6 +250,17 @@ class MainView {
                 autoStartManager.addToAutoStart(AutoStartLaunchConfig(additionalArgs = "--noGui"))
             else
                 autoStartManager.removeFromAutoStart()
+            updateGuiFromConfiguration()
+        }
+
+        checkBoxAppSpecificSettings.selectedProperty().addListener { _, _, newValue ->
+            if (guiUpdateInProgress) return@addListener
+            preferences[Keys.Profiles.Enabled] = newValue
+            updateGuiFromConfiguration()
+        }
+
+        textBoxOverrideAppSpecificSettingsTimeInMinutes.textProperty().addListener { _, _, _ ->
+            buttonApplyOverrideForAppSpecificSettings.isDisable = false
         }
 
         toggleButtonChargeFull.selectedProperty().addListener { _, _, newValue ->
@@ -305,6 +345,12 @@ class MainView {
             checkBoxAutoStart.isDisable = false
             checkBoxAutoStart.isSelected = autoStartManager.isInAutoStart
         }
+
+        val appSpecificSettingsEnabled = preferences[Keys.Profiles.Enabled]
+        checkBoxAppSpecificSettings.isSelected = appSpecificSettingsEnabled
+        buttonChangeAppSpecificSettings.isDisable = !appSpecificSettingsEnabled
+        hBoxOverrideAppSpecificSettings.isDisable = !appSpecificSettingsEnabled
+
 
         toggleButtonChargeFull.isSelected = preferences[Keys.CurrentChargingMode] == AlwaysOn
         toggleButtonChargeOptimized.isSelected = preferences[Keys.CurrentChargingMode] == Optimized

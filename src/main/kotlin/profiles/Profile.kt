@@ -17,8 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.apps
+package com.github.vatbub.smartcharge.profiles
 
-data class ApplicationStatusMatcher(val requirement: ApplicationStatus) : Matcher<ApplicationStatus> {
-    override fun matches(obj: ApplicationStatus): Boolean = obj == requirement
-}
+import com.github.vatbub.smartcharge.ChargingMode
+import kotlin.time.ExperimentalTime
+
+@ExperimentalTime
+data class Profile(val id: Long, val matcher: Matcher<*>, val chargingMode: ChargingMode)

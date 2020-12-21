@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="633.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="743.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8" fx:controller="com.github.vatbub.smartcharge.MainView">
     <children>
         <GridPane hgap="8.0" layoutX="246.0" layoutY="131.0" vgap="8.0" AnchorPane.bottomAnchor="0.0"
@@ -22,6 +22,10 @@
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
+                <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" vgrow="NEVER"/>
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
                 <RowConstraints vgrow="NEVER"/>
@@ -79,7 +83,7 @@
                     </children>
                 </HBox>
                 <GridPane hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0"
-                          GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                          GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -110,7 +114,7 @@
                 <CheckBox fx:id="checkBoxAutoStart" mnemonicParsing="false" text="Start this app with Windows"
                           GridPane.columnSpan="2147483647" GridPane.rowIndex="7"/>
                 <ScrollPane fx:id="logScrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                            minHeight="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="11">
+                            minHeight="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="13">
                     <content>
                         <TextFlow fx:id="logTextFlow" maxHeight="1.7976931348623157E308"
                                   maxWidth="1.7976931348623157E308" prefHeight="200.0"/>
@@ -122,11 +126,31 @@
                         <Insets bottom="1.0" left="16.0" right="16.0" top="1.0"/>
                     </padding>
                 </ScrollPane>
-                <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+                <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="12">
                     <children>
                         <Label text="Application log:"/>
                         <Button mnemonicParsing="false" onAction="#buttonShowLogFileOnAction"
                                 text="Show the log file in explorer"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                    <children>
+                        <CheckBox fx:id="checkBoxAppSpecificSettings" mnemonicParsing="false"
+                                  text="Use app-specific settings" wrapText="true" GridPane.columnSpan="2147483647"
+                                  GridPane.rowIndex="8"/>
+                        <Button fx:id="buttonChangeAppSpecificSettings" mnemonicParsing="false"
+                                onAction="#buttonChangeAppSpecificSettingsOnAction" text="Change app-specific settings"
+                                textAlignment="CENTER"/>
+                    </children>
+                </HBox>
+                <HBox fx:id="hBoxOverrideAppSpecificSettings" alignment="CENTER_LEFT" spacing="8.0"
+                      GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
+                    <children>
+                        <Label text="Override app-sepcific settings for" GridPane.rowIndex="9"/>
+                        <TextField fx:id="textBoxOverrideAppSpecificSettingsTimeInMinutes"/>
+                        <Label text="minutes."/>
+                        <Button fx:id="buttonApplyOverrideForAppSpecificSettings" disable="true" mnemonicParsing="false"
+                                onAction="#buttonApplyOverrideForAppSpecificSettingsOnAction" text="Apply"/>
                     </children>
                 </HBox>
             </children>

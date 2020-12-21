@@ -24,15 +24,33 @@ import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.smartcharge.ChargingMode.Optimized
+import java.io.File
 
 val preferences = Preferences(PropertiesFileKeyValueProvider(appDataFolder.resolve("settings.properties")))
 
 object Keys {
     object IFTTTMakerApiKey : Key<String>("iftttMakerKey", "", { it }, { it })
-    object IFTTTStartChargingEventName : Key<String>("iftttStartChargingEventName", "laptopStartCharging", { it }, { it })
+    object IFTTTStartChargingEventName :
+        Key<String>("iftttStartChargingEventName", "laptopStartCharging", { it }, { it })
+
     object IFTTTStopChargingEventName : Key<String>("iftttStopChargingEventName", "laptopStopCharging", { it }, { it })
     object MinPercentage : Key<Double>("minPercentage", 25.0, { it.toDouble() }, { it.toString() })
     object MaxPercentage : Key<Double>("maxPercentage", 80.0, { it.toDouble() }, { it.toString() })
-    object CurrentChargingMode : Key<ChargingMode>("currentChargingMode", Optimized, { ChargingMode.valueOf(it) }, { it.toString() })
+    object CurrentChargingMode :
+        Key<ChargingMode>("currentChargingMode", Optimized, { ChargingMode.valueOf(it) }, { it.toString() })
+
     object TrayMessageShown : Key<Boolean>("trayMessageShown", false, { it.toBoolean() }, { it.toString() })
+
+    object Profiles {
+        object Enabled : Key<Boolean>("profilesEnabled", false, { it.toBoolean() }, { it.toString() })
+
+        val XmlFileLocation by lazy {
+            Key(
+                uniqueName = "profilesXmlFileLocation",
+                defaultValue = appDataFolder.resolve("profiles.xml"),
+                parser = { File(it) },
+                serializer = { it.absolutePath }
+            )
+        }
+    }
 }

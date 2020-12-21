@@ -17,14 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.apps
+package com.github.vatbub.smartcharge.profiles
 
-sealed class StringMatcher : Matcher<String?>
+import org.w3c.dom.Element
 
-data class EqualsStringMatcher(val requirement: String) : StringMatcher() {
-    override fun matches(obj: String?): Boolean = obj == requirement
-}
-
-data class RegexStringMatcher(val requirement: Regex) : StringMatcher() {
-    override fun matches(obj: String?): Boolean = obj?.matches(requirement) ?: false
+interface MatcherCompanion<T, TMatcher : Matcher<T>> {
+    fun fromXml(matcherElement: Element): TMatcher
 }
