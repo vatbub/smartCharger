@@ -21,6 +21,7 @@ package com.github.vatbub.smartcharge
 
 import com.beust.jcommander.JCommander
 import com.github.vatbub.javaautostart.AutoStartManager
+import com.github.vatbub.smartcharge.Charger.ChargerState.Off
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
@@ -34,10 +35,12 @@ import javafx.stage.Stage
 import org.apache.commons.lang3.SystemUtils
 import java.awt.TrayIcon
 import kotlin.system.exitProcess
+import kotlin.time.ExperimentalTime
 
 const val appId = "com.github.vatbub.smartCharge"
 const val scheduledTaskName = "Smart Charge Before Shutdown Hook"
 
+@ExperimentalTime
 class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) : Application() {
     companion object {
         private lateinit var startupArgs: Array<out String>
@@ -77,7 +80,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
 
             val chargerStateToApply = commandLineArgs.switchChargerState
             if (chargerStateToApply != null)
-                Daemon.switchCharger(chargerStateToApply)
+                Charger.switchCharger(chargerStateToApply)
 
             if (!commandLineArgs.noGui)
                 startGui()
@@ -101,7 +104,7 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
                 Daemon.prepareApplicationShutdown()
                 if (!ignoreShutdownSetting && taskSchedulerManager != null && taskSchedulerManager.taskExists()) {
                     logger.info("Switching the charger off at shut down...")
-                    Daemon.switchCharger(Daemon.ChargerState.Off)
+                    Charger.switchCharger(Off)
                 }
                 val lockFreeFlag = unique.freeLock()
                 if (!lockFreeFlag)

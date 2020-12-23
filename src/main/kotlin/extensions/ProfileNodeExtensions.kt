@@ -16,6 +16,9 @@ val Element.profiles
 val Element.id
     get() = this.getAttribute("id").longValue
 
+val Element.priority
+    get() = this.getAttribute("priority").intValue
+
 val Element.chargingMode
     get() = ChargingMode.valueOf(this.getAttribute("chargingMode").value)
 

@@ -21,20 +21,38 @@
 package com.github.vatbub.smartcharge
 
 import com.beust.jcommander.Parameter
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 class CommandLineArgs {
     @Parameter(names = ["--help", "-h", "/?"], help = true)
     var help: Boolean = false
 
-    @Parameter(names = ["--noGui", "--nogui", "-ng", "/noGui", "/nogui", "/ng"], arity = 0, description = "If specified, no graphical user interface will be shown. Only the tray icon will be visible to the user. The user may open the GUI at any time by double-clicking the tray icon.")
+    @Parameter(
+        names = ["--noGui", "--nogui", "-ng", "/noGui", "/nogui", "/ng"],
+        arity = 0,
+        description = "If specified, no graphical user interface will be shown. Only the tray icon will be visible to the user. The user may open the GUI at any time by double-clicking the tray icon."
+    )
     var noGui: Boolean = false
 
-    @Parameter(names = ["--noDaemon", "--nodaemon", "-nd", "/noDaemon", "/nodaemon", "/nd"], arity = 0, description = "If specified, no daemon will be launched. If --switch is specified, the charger will be turned on or off accordingly. If --mode is specified, the specified mode will be saved for the next launch of the daemon.")
+    @Parameter(
+        names = ["--noDaemon", "--nodaemon", "-nd", "/noDaemon", "/nodaemon", "/nd"],
+        arity = 0,
+        description = "If specified, no daemon will be launched. If --switch is specified, the charger will be turned on or off accordingly. If --mode is specified, the specified mode will be saved for the next launch of the daemon."
+    )
     var noDaemon: Boolean = false
 
-    @Parameter(names = ["--mode", "-m", "/mode", "/m"], arity = 1, description = "The charging mode to use. Possible values (case-sensitive): AlwaysOn, Optimized, AlwaysOff ; If not specified, the charging mode which was used the last time is used. The user may change the charging mode at any time through the tray icon or through the GUI.")
+    @Parameter(
+        names = ["--mode", "-m", "/mode", "/m"],
+        arity = 1,
+        description = "The charging mode to use. Possible values (case-sensitive): AlwaysOn, Optimized, AlwaysOff ; If not specified, the charging mode which was used the last time is used. The user may change the charging mode at any time through the tray icon or through the GUI."
+    )
     var chargingMode: ChargingMode? = null
 
-    @Parameter(names = ["--switch", "-s", "/switch", "/s"], arity = 1, description = "Switches the charger on or off without regard to the current charging mode. Possible values (case-sensitive): On, Off")
-    var switchChargerState: Daemon.ChargerState? = null
+    @Parameter(
+        names = ["--switch", "-s", "/switch", "/s"],
+        arity = 1,
+        description = "Switches the charger on or off without regard to the current charging mode. Possible values (case-sensitive): On, Off"
+    )
+    var switchChargerState: Charger.ChargerState? = null
 }

@@ -44,6 +44,10 @@ object ProfileManager {
         ObservableList(readXml(), this::onAdd, this::onSet, this::onRemove, this::onClear)
     }
 
+    fun getActiveProfile(): Profile? = profiles
+        .sortedByDescending(Profile::priority)
+        .firstOrNull { it.condition.isActive() }
+
     private fun readXml(): List<Profile> =
         SAXBuilder()
             .build(preferences[Keys.Profiles.XmlFileLocation])

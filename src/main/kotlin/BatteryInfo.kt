@@ -22,7 +22,9 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.logging.logger
 import oshi.SystemInfo
 import oshi.hardware.PowerSource
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 object BatteryInfo {
     private val powerSources: Array<out PowerSource>
         get() {
@@ -32,15 +34,15 @@ object BatteryInfo {
             return sources
         }
 
-    val currentChargerState: Daemon.ChargerState
+    val currentChargerState: Charger.ChargerState
         get() {
             logger.debug("Reading power charging state...")
             return if (powerSources.any { it.isPowerOnLine }) {
                 logger.debug("Computer is connected to power.")
-                Daemon.ChargerState.On
+                Charger.ChargerState.On
             } else {
                 logger.debug("Computer is not connected to power.")
-                Daemon.ChargerState.Off
+                Charger.ChargerState.Off
             }
         }
 

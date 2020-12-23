@@ -40,8 +40,10 @@ import java.util.*
 import java.util.logging.Level
 import java.util.logging.LogRecord
 import kotlin.properties.Delegates
+import kotlin.time.ExperimentalTime
 
 
+@ExperimentalTime
 class MainView {
 
     var delayLogUpdatesAndSuppressErrorDialogs by Delegates.observable(false) { _, _, newValue -> LoggingHandlers.TextFieldHandler.delayLogUpdates = newValue }
@@ -232,9 +234,9 @@ class MainView {
 
             if (newValue) {
                 taskSchedulerManager.createOnEventTask(
-                        launchConfig = AutoStartLaunchConfig(additionalArgs = "--noGui --noDaemon --switch Off"),
-                        eventChannel = "System",
-                        eventName = "System[(EventID=1074)]"
+                    launchConfig = AutoStartLaunchConfig(additionalArgs = "--noGui --noDaemon --switch Off"),
+                    eventChannel = "System",
+                    eventName = "System[(EventID=1074)]"
                 )
             } else {
                 taskSchedulerManager.deleteTask()

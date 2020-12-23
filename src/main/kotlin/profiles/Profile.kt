@@ -23,15 +23,18 @@ import com.github.vatbub.smartcharge.ChargingMode
 import com.github.vatbub.smartcharge.extensions.chargingMode
 import com.github.vatbub.smartcharge.extensions.condition
 import com.github.vatbub.smartcharge.extensions.id
+import com.github.vatbub.smartcharge.extensions.priority
 import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
 import org.jdom2.Attribute
 import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-data class Profile(val id: Long, val condition: ProfileCondition, val chargingMode: ChargingMode) : XmlSerializable {
+data class Profile(val id: Long, val condition: ProfileCondition, val priority: Int, val chargingMode: ChargingMode) :
+    XmlSerializable {
     override fun toXml(): Element = profileElement {
         it.attributes.add(Attribute("id", id.toString()))
+        it.attributes.add(Attribute("priority", priority.toString()))
         it.attributes.add(Attribute("chargingMode", chargingMode.toString()))
         it.children.add(condition.toXml())
     }
@@ -40,6 +43,7 @@ data class Profile(val id: Long, val condition: ProfileCondition, val chargingMo
         override fun fromXml(element: Element) = Profile(
             id = element.id,
             condition = ProfileCondition.fromXml(element.condition),
+            priority = element.priority,
             chargingMode = element.chargingMode
         )
     }

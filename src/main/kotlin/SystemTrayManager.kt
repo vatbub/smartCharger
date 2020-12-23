@@ -24,7 +24,9 @@ import com.github.vatbub.smartcharge.GuiHelper.showMainView
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
 import java.awt.*
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 object SystemTrayManager {
     private var checkBoxMenuItemChargeFull: CheckboxMenuItem? = null
     private var checkBoxMenuItemChargeOptimized: CheckboxMenuItem? = null

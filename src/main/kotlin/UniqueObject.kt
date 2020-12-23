@@ -20,17 +20,19 @@
 package com.github.vatbub.smartcharge
 
 import com.github.vatbub.smartcharge.ApplicationInstanceMessage.*
+import com.github.vatbub.smartcharge.Charger.ChargerState.Off
+import com.github.vatbub.smartcharge.Charger.ChargerState.On
 import com.github.vatbub.smartcharge.ChargingMode.*
-import com.github.vatbub.smartcharge.Daemon.ChargerState.Off
-import com.github.vatbub.smartcharge.Daemon.ChargerState.On
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
 import tk.pratanumandal.unique4j.Unique4j
+import kotlin.time.ExperimentalTime
 
 private enum class ApplicationInstanceMessage {
     ShowGui, ModeFull, ModeOptimized, ModeNoCharge, SwitchChargerOn, SwitchChargerOff
 }
 
+@ExperimentalTime
 private object MessageHelper {
     private const val separator = ";"
 
@@ -70,6 +72,7 @@ private object MessageHelper {
     }
 }
 
+@ExperimentalTime
 val unique = object : Unique4j(appId) {
     override fun sendMessage(): String {
         logger.warn("Another instance is already running, passing arguments to other instance...")
@@ -103,8 +106,8 @@ val unique = object : Unique4j(appId) {
                     preferences[Keys.CurrentChargingMode] = AlwaysOff
                     Daemon.applyConfiguration()
                 }
-                SwitchChargerOn -> Daemon.switchCharger(On)
-                SwitchChargerOff -> Daemon.switchCharger(Off)
+                SwitchChargerOn -> Charger.switchCharger(On)
+                SwitchChargerOff -> Charger.switchCharger(Off)
             }
         }
         SystemTrayManager.updateTrayMenu()
