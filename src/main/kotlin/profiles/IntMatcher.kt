@@ -19,7 +19,11 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import com.github.vatbub.smartcharge.extensions.requirement
+import com.github.vatbub.smartcharge.extensions.subtype
+import org.jdom2.Attribute
+import org.jdom2.Element
+
 
 sealed class IntMatcher : Matcher<Int> {
     data class EqualsMatcher(val requirement: Int) : IntMatcher() {
@@ -46,17 +50,32 @@ sealed class IntMatcher : Matcher<Int> {
         override fun matches(obj: Int): Boolean = obj in requirement
     }
 
-    companion object : MatcherCompanion<Int, IntMatcher> {
-        override fun fromXml(matcherElement: Element): IntMatcher {
-            return when (val subtype = matcherElement.getAttribute("subtype")) {
-                "Equals" -> EqualsMatcher(matcherElement.getAttribute("requirement").toInt())
-                "Lower" -> LowerMatcher(matcherElement.getAttribute("requirement").toInt())
-                "LowerOrEquals" -> LowerOrEqualsMatcher(matcherElement.getAttribute("requirement").toInt())
-                "Greater" -> GreaterMatcher(matcherElement.getAttribute("requirement").toInt())
-                "GreaterOrEquals" -> GreaterOrEqualsMatcher(matcherElement.getAttribute("requirement").toInt())
+    override fun toXml(): Element = when (this) {
+        is EqualsMatcher -> matcherElement { it.attributes.add(this.requirement.toXml()) }
+        is LowerMatcher -> matcherElement { it.attributes.add(this.requirement.toXml()) }
+        is LowerOrEqualsMatcher -> matcherElement { it.attributes.add(this.requirement.toXml()) }
+        is GreaterMatcher -> matcherElement { it.attributes.add(this.requirement.toXml()) }
+        is GreaterOrEqualsMatcher -> matcherElement { it.attributes.add(this.requirement.toXml()) }
+        is BetweenMatcher -> matcherElement { it.attributes.addAll(this.requirement.toXml()) }
+    }
+
+    private fun Int.toXml() = requirementAttribute(this.toString())
+    private fun IntRange.toXml() = listOf(
+        Attribute("lowerRequirement", this.first.toString()),
+        Attribute("higherRequirement", this.last.toString())
+    )
+
+    companion object : XmlSerializableCompanion<IntMatcher> {
+        override fun fromXml(element: Element): IntMatcher {
+            return when (val subtype = element.subtype) {
+                "Equals" -> EqualsMatcher(element.requirement.intValue)
+                "Lower" -> LowerMatcher(element.requirement.intValue)
+                "LowerOrEquals" -> LowerOrEqualsMatcher(element.requirement.intValue)
+                "Greater" -> GreaterMatcher(element.requirement.intValue)
+                "GreaterOrEquals" -> GreaterOrEqualsMatcher(element.requirement.intValue)
                 "Between" -> BetweenMatcher(
-                    matcherElement.getAttribute("lowerRequirement").toInt()..
-                            matcherElement.getAttribute("higherRequirement").toInt()
+                    element.getAttribute("lowerRequirement").intValue..
+                            element.getAttribute("higherRequirement").intValue
                 )
                 else -> throw IllegalArgumentException("IntMatcher subtype $subtype unknown")
             }

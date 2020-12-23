@@ -19,8 +19,8 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import org.jdom2.Element
 
-interface MatcherCompanion<T, TMatcher : Matcher<T>> {
-    fun fromXml(matcherElement: Element): TMatcher
+interface XmlSerializableCompanion<TResult : XmlSerializable> {
+    fun fromXml(element: Element): TResult
 }

@@ -19,16 +19,17 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import com.github.vatbub.smartcharge.extensions.type
+import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
-interface Matcher<T> {
+interface Matcher<T> : XmlSerializable {
     fun matches(obj: T): Boolean
 
     @ExperimentalTime
     companion object {
         fun fromXml(matcherElement: Element): Matcher<*> =
-            when (val type = matcherElement.getAttribute("type")) {
+            when (val type = matcherElement.type) {
                 "Application" -> ApplicationMatcher.fromXml(matcherElement)
                 "ApplicationStatus" -> ApplicationStatusMatcher.fromXml(matcherElement)
                 "Int" -> IntMatcher.fromXml(matcherElement)

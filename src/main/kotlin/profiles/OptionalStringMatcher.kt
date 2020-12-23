@@ -19,13 +19,16 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import com.github.vatbub.smartcharge.extensions.requirement
+import com.github.vatbub.smartcharge.extensions.subtype
+import org.jdom2.Element
+
 
 sealed class OptionalStringMatcher : Matcher<String?> {
-    companion object : MatcherCompanion<String?, OptionalStringMatcher> {
-        override fun fromXml(matcherElement: Element): OptionalStringMatcher {
-            val requirement = matcherElement.getAttribute("requirement")
-            return when (val subtype = matcherElement.getAttribute("subtype")) {
+    companion object : XmlSerializableCompanion<OptionalStringMatcher> {
+        override fun fromXml(element: Element): OptionalStringMatcher {
+            val requirement = element.requirement.value
+            return when (val subtype = element.subtype) {
                 "Equals" -> OptionalEqualsStringMatcher(requirement)
                 "Regex" -> OptionalRegexStringMatcher(requirement.toRegex())
                 else -> throw IllegalArgumentException("OptionalStringMatcher subtype $subtype unknown")
@@ -36,8 +39,16 @@ sealed class OptionalStringMatcher : Matcher<String?> {
 
 data class OptionalEqualsStringMatcher(val requirement: String) : OptionalStringMatcher() {
     override fun matches(obj: String?): Boolean = obj == requirement
+
+    override fun toXml() = matcherElement {
+        it.attributes.add(requirementAttribute(requirement))
+    }
 }
 
 data class OptionalRegexStringMatcher(val requirement: Regex) : OptionalStringMatcher() {
     override fun matches(obj: String?): Boolean = obj?.matches(requirement) ?: false
+
+    override fun toXml() = matcherElement {
+        it.attributes.add(requirementAttribute(requirement.pattern))
+    }
 }

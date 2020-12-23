@@ -19,14 +19,23 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import org.jdom2.Attribute
+import org.jdom2.Element
+
 
 data class ApplicationStatusMatcher(val requirement: ApplicationStatus) : Matcher<ApplicationStatus> {
     override fun matches(obj: ApplicationStatus): Boolean = obj == requirement
 
-    companion object : MatcherCompanion<ApplicationStatus, ApplicationStatusMatcher> {
-        override fun fromXml(matcherElement: Element) = ApplicationStatusMatcher(
-            ApplicationStatus.valueOf(matcherElement.getAttribute("requirement"))
+    override fun toXml(): Element =
+        matcherElement {
+            it.attributes.add(
+                Attribute("requirement", requirement.toString())
+            )
+        }
+
+    companion object : XmlSerializableCompanion<ApplicationStatusMatcher> {
+        override fun fromXml(element: Element) = ApplicationStatusMatcher(
+            ApplicationStatus.valueOf(element.getAttribute("requirement").value)
         )
     }
 }

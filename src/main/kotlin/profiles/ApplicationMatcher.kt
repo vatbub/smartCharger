@@ -19,8 +19,8 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import com.github.vatbub.smartcharge.extensions.toList
-import org.w3c.dom.Element
+import com.github.vatbub.smartcharge.extensions.*
+import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -44,22 +44,33 @@ data class ApplicationMatcher(
                 userNameMatcher.matches(obj.userName) &&
                 windowTitleMatcher.matches(obj.windowTitle)
 
-    companion object : MatcherCompanion<RunningApplication, ApplicationMatcher> {
-        override fun fromXml(matcherElement: Element) = with(
-            matcherElement
-                .childNodes
-                .toList()
-                .mapNotNull { it as? Element }) {
-            ApplicationMatcher(
-                imageNameMatcher = StringMatcher.fromXml(this.first { it.nodeName == "imageName" }),
-                pidMatcher = IntMatcher.fromXml(this.first { it.nodeName == "pid" }),
-                sessionNameMatcher = StringMatcher.fromXml(this.first { it.nodeName == "sessionName" }),
-                sessionIdMatcher = IntMatcher.fromXml(this.first { it.nodeName == "sessionId" }),
-                memoryUsageMatcher = StringMatcher.fromXml(this.first { it.nodeName == "memoryUsage" }),
-                statusMatcher = ApplicationStatusMatcher.fromXml(this.first { it.nodeName == "status" }),
-                userNameMatcher = OptionalStringMatcher.fromXml(this.first { it.nodeName == "userName" }),
-                windowTitleMatcher = OptionalStringMatcher.fromXml(this.first { it.nodeName == "windowTitle" }),
+    override fun toXml(): Element =
+        matcherElement {
+            it.children.addAll(
+                listOf(
+                    imageNameMatcher.toXml(),
+                    pidMatcher.toXml(),
+                    sessionNameMatcher.toXml(),
+                    sessionIdMatcher.toXml(),
+                    memoryUsageMatcher.toXml(),
+                    statusMatcher.toXml(),
+                    userNameMatcher.toXml(),
+                    windowTitleMatcher.toXml()
+                )
             )
         }
+
+    companion object : XmlSerializableCompanion<ApplicationMatcher> {
+        override fun fromXml(element: Element) =
+            ApplicationMatcher(
+                imageNameMatcher = StringMatcher.fromXml(element.imageName),
+                pidMatcher = IntMatcher.fromXml(element.pid),
+                sessionNameMatcher = StringMatcher.fromXml(element.sessionName),
+                sessionIdMatcher = IntMatcher.fromXml(element.sessionId),
+                memoryUsageMatcher = StringMatcher.fromXml(element.memoryUsage),
+                statusMatcher = ApplicationStatusMatcher.fromXml(element.status),
+                userNameMatcher = OptionalStringMatcher.fromXml(element.userName),
+                windowTitleMatcher = OptionalStringMatcher.fromXml(element.windowTitle),
+            )
     }
 }

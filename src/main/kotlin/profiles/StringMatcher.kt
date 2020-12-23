@@ -19,13 +19,16 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
-import org.w3c.dom.Element
+import com.github.vatbub.smartcharge.extensions.requirement
+import com.github.vatbub.smartcharge.extensions.subtype
+import org.jdom2.Element
+
 
 sealed class StringMatcher : Matcher<String> {
-    companion object : MatcherCompanion<String, StringMatcher> {
-        override fun fromXml(matcherElement: Element): StringMatcher {
-            val requirement = matcherElement.getAttribute("requirement")
-            return when (val subtype = matcherElement.getAttribute("subtype")) {
+    companion object : XmlSerializableCompanion<StringMatcher> {
+        override fun fromXml(element: Element): StringMatcher {
+            val requirement = element.requirement.value
+            return when (val subtype = element.subtype) {
                 "Equals" -> EqualsStringMatcher(requirement)
                 "Regex" -> RegexStringMatcher(requirement.toRegex())
                 else -> throw IllegalArgumentException("StringMatcher subtype $subtype unknown")
@@ -36,8 +39,16 @@ sealed class StringMatcher : Matcher<String> {
 
 data class EqualsStringMatcher(val requirement: String) : StringMatcher() {
     override fun matches(obj: String): Boolean = obj == requirement
+
+    override fun toXml() = matcherElement {
+        it.attributes.add(requirementAttribute(requirement))
+    }
 }
 
 data class RegexStringMatcher(val requirement: Regex) : StringMatcher() {
     override fun matches(obj: String): Boolean = obj.matches(requirement)
+
+    override fun toXml() = matcherElement {
+        it.attributes.add(requirementAttribute(requirement.pattern))
+    }
 }
