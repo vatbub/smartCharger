@@ -48,12 +48,16 @@ object ProfileManager {
         .sortedByDescending(Profile::priority)
         .firstOrNull { it.condition.isActive() }
 
-    private fun readXml(): List<Profile> =
-        SAXBuilder()
-            .build(preferences[Keys.Profiles.XmlFileLocation])
+    private fun readXml(): List<Profile> {
+        val xmlFile = preferences[Keys.Profiles.XmlFileLocation]
+        if (!xmlFile.exists()) return listOf()
+
+        return SAXBuilder()
+            .build(xmlFile)
             .rootElement
             .profiles
             .map { Profile.fromXml(it) }
+    }
 
     private fun saveXml() {
         val document = Document(
