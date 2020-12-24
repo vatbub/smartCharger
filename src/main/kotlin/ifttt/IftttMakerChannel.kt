@@ -32,12 +32,19 @@ data class IftttMakerChannel(private val apiKey: String, private val endpoint: U
         private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
     }
 
-    fun sendEvent(eventName: String, details1: String = "", details2: String = "", details3: String = ""): IftttMakerChannelResponse {
+    fun sendEvent(
+        eventName: String,
+        details1: String = "",
+        details2: String = "",
+        details3: String = ""
+    ): IftttMakerChannelResponse {
         val request = Request.Builder()
-                .url(URL(endpoint, "trigger/$eventName/with/key/$apiKey"))
-                .post("{ \"value1\" : \"$details1\", \"value2\" : \"$details2\", \"value3\" : \"$details3\" }"
-                        .toRequestBody(jsonMediaType))
-                .build()
+            .url(URL(endpoint, "trigger/$eventName/with/key/$apiKey"))
+            .post(
+                "{ \"value1\" : \"$details1\", \"value2\" : \"$details2\", \"value3\" : \"$details3\" }"
+                    .toRequestBody(jsonMediaType)
+            )
+            .build()
         client.newCall(request).execute().use { response ->
             return IftttMakerChannelResponse(response.code, response.body?.string())
         }
