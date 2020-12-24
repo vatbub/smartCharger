@@ -25,6 +25,8 @@ import com.github.vatbub.smartcharge.Charger.switchCharger
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
+import java.io.InterruptedIOException
+import java.lang.Thread.sleep
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -76,15 +78,23 @@ object Daemon {
     }
 
     private fun ChargingMode.switchChargerAccordingToChargingMode() {
-        when (this) {
-            ChargingMode.AlwaysOn -> switchCharger(On)
-            ChargingMode.AlwaysOff -> switchCharger(Off)
-            ChargingMode.Optimized -> {
-                val percentage = BatteryInfo.currentPercentage
-                if (percentage <= preferences[Keys.MinPercentage].toDouble())
-                    switchCharger(On)
-                else if (percentage >= preferences[Keys.MaxPercentage].toDouble())
-                    switchCharger(Off)
+        try {
+            when (this) {
+                ChargingMode.AlwaysOn -> switchCharger(On)
+                ChargingMode.AlwaysOff -> switchCharger(Off)
+                ChargingMode.Optimized -> {
+                    val percentage = BatteryInfo.currentPercentage
+                    if (percentage <= preferences[Keys.MinPercentage].toDouble())
+                        switchCharger(On)
+                    else if (percentage >= preferences[Keys.MaxPercentage].toDouble())
+                        switchCharger(Off)
+                }
+            }
+        } catch (e: InterruptedIOException) {
+            logger.info("InterruptedIOException while setting charger state, retrying...", e)
+            Thread {
+                sleep(500)
+                switchChargerAccordingToChargingMode()
             }
         }
     }
