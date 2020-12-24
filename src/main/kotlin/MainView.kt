@@ -118,6 +118,7 @@ class MainView {
 
     @FXML
     fun buttonChangeAppSpecificSettingsOnAction(event: ActionEvent?) {
+        ProfileDialog.show()
     }
 
     @FXML
