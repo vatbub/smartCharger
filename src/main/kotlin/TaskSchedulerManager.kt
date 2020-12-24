@@ -24,8 +24,10 @@ import com.github.vatbub.smartcharge.logging.logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
+import kotlin.time.ExperimentalTime
 
 // Docs: https://stackoverflow.com/questions/101647/how-to-schedule-a-task-to-run-when-shutting-down-windows
+@ExperimentalTime
 data class TaskSchedulerManager(val taskName: String) {
     fun createOnEventTask(launchConfig: AutoStartLaunchConfig,
                           eventChannel: String,

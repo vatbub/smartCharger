@@ -31,7 +31,9 @@ import java.io.IOException
 import java.nio.file.Files
 import java.util.logging.*
 import kotlin.properties.Delegates
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 object LoggingHandlers {
     object FileHandlerLock
     object InitLock
@@ -76,7 +78,7 @@ object LoggingHandlers {
             synchronized(FileHandlerLock) {
                 if (internalFileHandler != null) return internalFileHandler
                 val logFilePathCopy = LoggingConfiguration.logFilePath
-                        ?: return null
+                    ?: return null
                 val finalLogLocation = LoggingConfiguration.combineLogFilePathAndName() ?: return null
 
                 try {
@@ -179,6 +181,7 @@ object LoggingHandlers {
 
     }
 
+    @ExperimentalTime
     object SystemTrayHandler : Handler() {
         init {
             this.level = LoggingConfiguration.trayLogLevel
@@ -205,6 +208,7 @@ object LoggingHandlers {
 
     }
 
+    @ExperimentalTime
     object GuiErrorMessageHandler : Handler() {
         init {
             this.level = LoggingConfiguration.guiErrorMessageLogLevel

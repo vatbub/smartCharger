@@ -36,8 +36,10 @@ import javafx.stage.Stage
 import java.net.URL
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.time.ExperimentalTime
 
 
+@ExperimentalTime
 class LogInView(private val startUrl: String, private val loadStartUrlAgainIfThisUrlIsLoaded: String? = null, showGuiOnClassInitialization: Boolean = true, private val onApiTokenReceived: (apiKey: String) -> Boolean) {
     @Suppress("MemberVisibilityCanBePrivate")
     val stage = Stage()

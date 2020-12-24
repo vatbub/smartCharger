@@ -21,18 +21,22 @@ package com.github.vatbub.smartcharge.logging
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 val logger by lazy {
     LoggingHandlers.initializeIfUninitialized()
     LoggerFactory.getLogger("Global")!!
 }
 
+@ExperimentalTime
 val Any.logger: Logger
     get() {
         LoggingHandlers.initializeIfUninitialized()
         return LoggerFactory.getLogger(this.javaClass)!!
     }
 
+@ExperimentalTime
 val exceptionHandler = { thread: Thread, throwable: Throwable ->
     logger.error("Exception in thread ${thread.name}.", throwable)
 }
