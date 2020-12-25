@@ -51,10 +51,18 @@ object Daemon {
     }
 
     private fun determineCurrentChargingMode(): ChargingMode {
+
         val activeProfile =
-            if (ProfileManager.enabled)
+            if (!ProfileManager.enabled) {
+                logger.info("ProfileManager is disabled")
+                null
+            } else if (ProfileManager.isOverridden) {
+                logger.info("ProfileManager is enabled but overridden")
+                null
+            } else {
+                logger.info("ProfileManager is enabled and not overridden")
                 ProfileManager.getActiveProfile()
-            else null
+            }
 
         if (activeProfile == null) {
             logger.debug("No profile active, setting global charge mode...")

@@ -30,6 +30,7 @@ import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
 import java.io.FileWriter
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeMark
 
 @Suppress("UNUSED_PARAMETER")
 @ExperimentalTime
@@ -42,6 +43,15 @@ object ProfileManager {
 
     val profiles: ObservableList<Profile> by lazy {
         ObservableList(readXml(), this::onAdd, this::onSet, this::onRemove, this::onClear)
+    }
+
+    var overriddenUntil: TimeMark? = null
+        private set
+    val isOverridden: Boolean
+        get() = overriddenUntil?.hasNotPassedNow() == true
+
+    fun overrideProfilesUntil(time: TimeMark) {
+        overriddenUntil = time
     }
 
     fun getActiveProfile(): Profile? = profiles

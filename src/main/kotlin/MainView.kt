@@ -24,6 +24,7 @@ import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.extensions.highlightFileInExplorer
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.logger
+import com.github.vatbub.smartcharge.profiles.ProfileManager
 import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
@@ -41,12 +42,16 @@ import java.util.logging.Level
 import java.util.logging.LogRecord
 import kotlin.properties.Delegates
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
+import kotlin.time.minutes
 
 
 @ExperimentalTime
 class MainView {
 
-    var delayLogUpdatesAndSuppressErrorDialogs by Delegates.observable(false) { _, _, newValue -> LoggingHandlers.TextFieldHandler.delayLogUpdates = newValue }
+    var delayLogUpdatesAndSuppressErrorDialogs by Delegates.observable(false) { _, _, newValue ->
+        LoggingHandlers.TextFieldHandler.delayLogUpdates = newValue
+    }
 
     @FXML
     private lateinit var resources: ResourceBundle
@@ -123,6 +128,8 @@ class MainView {
 
     @FXML
     fun buttonApplyOverrideForAppSpecificSettingsOnAction(event: ActionEvent?) {
+        val overrideDurationInMinutes = textBoxOverrideAppSpecificSettingsTimeInMinutes.text.toLong().minutes
+        ProfileManager.overrideProfilesUntil(TimeSource.Monotonic.markNow() + overrideDurationInMinutes)
     }
 
     @FXML
