@@ -135,22 +135,22 @@
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
                     <children>
-                        <CheckBox fx:id="checkBoxAppSpecificSettings" mnemonicParsing="false"
-                                  text="Use app-specific settings" wrapText="true" GridPane.columnSpan="2147483647"
+                        <CheckBox fx:id="checkBoxProfiles" mnemonicParsing="false"
+                                  text="Use profiles:" wrapText="true" GridPane.columnSpan="2147483647"
                                   GridPane.rowIndex="8"/>
-                        <Button fx:id="buttonChangeAppSpecificSettings" mnemonicParsing="false"
-                                onAction="#buttonChangeAppSpecificSettingsOnAction" text="Change app-specific settings"
+                        <Button fx:id="buttonChangeProfileSettings" mnemonicParsing="false"
+                                onAction="#buttonChangeProfileSettingsOnAction" text="Change profile settings"
                                 textAlignment="CENTER"/>
                     </children>
                 </HBox>
-                <HBox fx:id="hBoxOverrideAppSpecificSettings" alignment="CENTER_LEFT" spacing="8.0"
+                <HBox fx:id="hBoxOverrideProfiles" alignment="CENTER_LEFT" spacing="8.0"
                       GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
                     <children>
-                        <Label text="Override app-sepcific settings for" GridPane.rowIndex="9"/>
-                        <TextField fx:id="textBoxOverrideAppSpecificSettingsTimeInMinutes"/>
+                        <Label text="Override profiles for" GridPane.rowIndex="9"/>
+                        <TextField fx:id="textBoxOverrideProfilesTimeInMinutes"/>
                         <Label text="minutes."/>
-                        <Button fx:id="buttonApplyOverrideForAppSpecificSettings" disable="true" mnemonicParsing="false"
-                                onAction="#buttonApplyOverrideForAppSpecificSettingsOnAction" text="Apply"/>
+                        <Button fx:id="buttonApplyOverrideForProfiles" disable="true" mnemonicParsing="false"
+                                onAction="#buttonApplyOverrideForProfilesOnAction" text="Apply"/>
                     </children>
                 </HBox>
             </children>

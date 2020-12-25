@@ -96,19 +96,19 @@ class MainView {
     private lateinit var checkBoxAutoStart: CheckBox
 
     @FXML
-    private lateinit var checkBoxAppSpecificSettings: CheckBox
+    private lateinit var checkBoxProfiles: CheckBox
 
     @FXML
-    private lateinit var textBoxOverrideAppSpecificSettingsTimeInMinutes: TextField
+    private lateinit var textBoxOverrideProfilesTimeInMinutes: TextField
 
     @FXML
-    private lateinit var buttonChangeAppSpecificSettings: Button
+    private lateinit var buttonChangeProfileSettings: Button
 
     @FXML
-    private lateinit var hBoxOverrideAppSpecificSettings: HBox
+    private lateinit var hBoxOverrideProfiles: HBox
 
     @FXML
-    private lateinit var buttonApplyOverrideForAppSpecificSettings: Button
+    private lateinit var buttonApplyOverrideForProfiles: Button
 
     private var guiUpdateInProgress = false
 
@@ -122,13 +122,13 @@ class MainView {
     }
 
     @FXML
-    fun buttonChangeAppSpecificSettingsOnAction(event: ActionEvent?) {
+    fun buttonChangeProfileSettingsOnAction(event: ActionEvent?) {
         ProfileDialog.show()
     }
 
     @FXML
-    fun buttonApplyOverrideForAppSpecificSettingsOnAction(event: ActionEvent?) {
-        val overrideDurationInMinutes = textBoxOverrideAppSpecificSettingsTimeInMinutes.text.toLong().minutes
+    fun buttonApplyOverrideForProfilesOnAction(event: ActionEvent?) {
+        val overrideDurationInMinutes = textBoxOverrideProfilesTimeInMinutes.text.toLong().minutes
         ProfileManager.overrideProfilesUntil(TimeSource.Monotonic.markNow() + overrideDurationInMinutes)
     }
 
@@ -165,11 +165,11 @@ class MainView {
         assert(checkBoxStopChargingOnShutdown != null) { "fx:id=\"checkBoxStopChargingOnShutdown\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(toggleButtonStopCharging != null) { "fx:id=\"toggleButtonStopCharging\" was not injected: check your FXML file 'MainView.fxml'." }
         assert(checkBoxAutoStart != null) { "fx:id=\"checkBoxAutoStart\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(checkBoxAppSpecificSettings != null) { "fx:id=\"checkBoxAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(textBoxOverrideAppSpecificSettingsTimeInMinutes != null) { "fx:id=\"textBoxOverrideAppSpecificSettingsTimeInMinutes\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(buttonChangeAppSpecificSettings != null) { "fx:id=\"buttonChangeAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(hBoxOverrideAppSpecificSettings != null) { "fx:id=\"hBoxOverrideAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
-        assert(buttonApplyOverrideForAppSpecificSettings != null) { "fx:id=\"buttonApplyOverrideForAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(checkBoxProfiles != null) { "fx:id=\"checkBoxAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(textBoxOverrideProfilesTimeInMinutes != null) { "fx:id=\"textBoxOverrideAppSpecificSettingsTimeInMinutes\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(buttonChangeProfileSettings != null) { "fx:id=\"buttonChangeAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(hBoxOverrideProfiles != null) { "fx:id=\"hBoxOverrideAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
+        assert(buttonApplyOverrideForProfiles != null) { "fx:id=\"buttonApplyOverrideForAppSpecificSettings\" was not injected: check your FXML file 'MainView.fxml'." }
 
         updateGuiFromConfiguration()
         LoggingHandlers.TextFieldHandler.loggingTextFlow = logTextFlow
@@ -263,14 +263,14 @@ class MainView {
             updateGuiFromConfiguration()
         }
 
-        checkBoxAppSpecificSettings.selectedProperty().addListener { _, _, newValue ->
+        checkBoxProfiles.selectedProperty().addListener { _, _, newValue ->
             if (guiUpdateInProgress) return@addListener
             preferences[Keys.Profiles.Enabled] = newValue
             updateGuiFromConfiguration()
         }
 
-        textBoxOverrideAppSpecificSettingsTimeInMinutes.textProperty().addListener { _, _, _ ->
-            buttonApplyOverrideForAppSpecificSettings.isDisable = false
+        textBoxOverrideProfilesTimeInMinutes.textProperty().addListener { _, _, _ ->
+            buttonApplyOverrideForProfiles.isDisable = false
         }
 
         toggleButtonChargeFull.selectedProperty().addListener { _, _, newValue ->
@@ -357,9 +357,9 @@ class MainView {
         }
 
         val appSpecificSettingsEnabled = preferences[Keys.Profiles.Enabled]
-        checkBoxAppSpecificSettings.isSelected = appSpecificSettingsEnabled
-        buttonChangeAppSpecificSettings.isDisable = !appSpecificSettingsEnabled
-        hBoxOverrideAppSpecificSettings.isDisable = !appSpecificSettingsEnabled
+        checkBoxProfiles.isSelected = appSpecificSettingsEnabled
+        buttonChangeProfileSettings.isDisable = !appSpecificSettingsEnabled
+        hBoxOverrideProfiles.isDisable = !appSpecificSettingsEnabled
 
 
         toggleButtonChargeFull.isSelected = preferences[Keys.CurrentChargingMode] == AlwaysOn
