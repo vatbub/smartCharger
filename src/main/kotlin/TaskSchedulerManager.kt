@@ -45,7 +45,7 @@ data class TaskSchedulerManager(val taskName: String) {
         val command = "schtasks /Query /TN \"$taskName\""
         val exitCode = runCommandAndLogOutput(command)
                 .waitFor()
-        logger.info("Subprocess $command finished with exit code $exitCode")
+        logger.debug("Subprocess $command finished with exit code $exitCode")
         return exitCode == 0
     }
 
@@ -55,13 +55,13 @@ data class TaskSchedulerManager(val taskName: String) {
 
     private fun runCommandWithExceptionWhenExitCodeIsNotZero(command: String) {
         val exitCode = runCommandAndLogOutput(command).waitFor()
-        logger.info("Subprocess $command finished with exit code $exitCode")
+        logger.debug("Subprocess $command finished with exit code $exitCode")
         if (exitCode == 0) return
         throw IllegalStateException("Sub-process exited with non-zero exit code. Exit code was: $exitCode")
     }
 
     private fun runCommandAndLogOutput(command: String): Process {
-        logger.info("Starting subprocess $command")
+        logger.debug("Starting subprocess $command")
         return Runtime.getRuntime().exec(command).apply {
             inputStream.log()
             errorStream.log()
@@ -74,7 +74,7 @@ data class TaskSchedulerManager(val taskName: String) {
             this@log.bufferedReader().use { inputReader ->
                 var nextLine = inputReader.readLine()
                 while (nextLine != null) {
-                    logger.info("[Command output] $nextLine")
+                    logger.debug("[Command output] $nextLine")
                     nextLine = inputReader.readLine()
                 }
             }
