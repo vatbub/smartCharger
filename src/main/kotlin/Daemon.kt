@@ -22,42 +22,30 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.Charger.ChargerState.Off
 import com.github.vatbub.smartcharge.Charger.ChargerState.On
 import com.github.vatbub.smartcharge.Charger.switchCharger
-import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
+import com.github.vatbub.smartcharge.util.launchPeriodically
+import kotlinx.coroutines.*
 import java.io.InterruptedIOException
-import java.lang.Thread.sleep
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
+import kotlin.time.minutes
 
 @ExperimentalTime
 object Daemon {
-    private var daemonExecutorService: ScheduledExecutorService? = null
+    private var daemonJob: Job? = null
 
     @Suppress("MemberVisibilityCanBePrivate")
     val isRunning: Boolean
-        get() {
-            synchronized(Lock) {
-                return daemonExecutorService != null
-            }
-        }
+        get() = daemonJob != null
 
-    object Lock
+    private fun start() = GlobalScope.launch {
+        logger.info("Starting the daemon...")
 
-    private fun start() {
-        synchronized(Lock) {
-            logger.info("Starting the daemon, initializing optimized charging...")
-            daemonExecutorService = Executors.newSingleThreadScheduledExecutor().apply {
-                scheduleAtFixedRate({
-                    try {
-                        determineCurrentChargingMode()
-                            .switchChargerAccordingToChargingMode()
-                    } catch (e: Throwable) {
-                        exceptionHandler(Thread.currentThread(), e)
-                    }
-                }, 0, 1, TimeUnit.MINUTES)
+        daemonJob = coroutineScope {
+            launchPeriodically(1.minutes) {
+                determineCurrentChargingMode()
+                    .switchChargerAccordingToChargingMode()
             }
         }
     }
@@ -77,7 +65,7 @@ object Daemon {
         return activeProfile.chargingMode
     }
 
-    private fun ChargingMode.switchChargerAccordingToChargingMode() {
+    private suspend fun ChargingMode.switchChargerAccordingToChargingMode() {
         try {
             when (this) {
                 ChargingMode.AlwaysOn -> switchCharger(On)
@@ -92,26 +80,21 @@ object Daemon {
             }
         } catch (e: InterruptedIOException) {
             logger.info("InterruptedIOException while setting charger state, retrying...", e)
-            Thread {
-                sleep(500)
-                switchChargerAccordingToChargingMode()
-            }
+            delay(500.milliseconds)
+            switchChargerAccordingToChargingMode()
         }
     }
 
     fun prepareApplicationShutdown() {
-        synchronized(Lock) {
-            stop()
-            logger.debug("Shutting the state verification executor service down...")
-        }
+        stop()
+        logger.debug("Shutting the state verification executor service down...")
     }
 
     fun stop() {
-        synchronized(Lock) {
-            if (!isRunning) return
-            logger.info("Shutting the daemon down...")
-            daemonExecutorService?.shutdownNow()
-        }
+        if (!isRunning) return
+        logger.info("Shutting the daemon down...")
+        daemonJob?.cancel()
+        daemonJob = null
     }
 
     fun applyConfiguration() {

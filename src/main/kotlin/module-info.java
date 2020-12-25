@@ -35,7 +35,7 @@ module smartCharger {
     requires unique4j;
     requires javafx.controls;
     requires javafx.web;
-    requires kotlinx.coroutines.core;
+    requires kotlinx.coroutines.core.jvm;
     requires jdom2;
 
     opens com.github.vatbub.smartcharge;

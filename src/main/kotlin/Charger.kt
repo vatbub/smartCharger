@@ -22,22 +22,16 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.Charger.ChargerState.Unknown
 import com.github.vatbub.smartcharge.ifttt.IftttMakerChannel
 import com.github.vatbub.smartcharge.logging.logger
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 @ExperimentalTime
 object Charger {
-    private val stateVerificationExecutorService: ScheduledExecutorService by lazy {
-        logger.debug("Starting the state verification executor service...")
-        Executors.newSingleThreadScheduledExecutor {
-            Executors.defaultThreadFactory().newThread(it).apply {
-                isDaemon = true
-            }
-        }
-    }
+    private var lastChargerStateVerificationFuture: Job? = null
 
     fun switchCharger(newChargerState: ChargerState) {
         logger.info("Switching the charger ${newChargerState.toString().toLowerCase()}...")
@@ -60,14 +54,14 @@ object Charger {
         }
 
         val result = IftttMakerChannel(apiKey).sendEvent(eventName)
-        lastChargerStateVerificationFuture?.cancel(false)
-        if (!stateVerificationExecutorService.isShutdown)
-            lastChargerStateVerificationFuture =
-                stateVerificationExecutorService.schedule(this::verifyChargerState, 30, TimeUnit.SECONDS)
+
+        lastChargerStateVerificationFuture?.cancel()
+        lastChargerStateVerificationFuture = GlobalScope.launch {
+            delay(30.seconds)
+            verifyChargerState()
+        }
         logger.debug(result.responseText)
     }
-
-    private var lastChargerStateVerificationFuture: Future<*>? = null
 
 
     private fun verifyChargerState() {
