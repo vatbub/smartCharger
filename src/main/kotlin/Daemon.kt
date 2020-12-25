@@ -25,7 +25,9 @@ import com.github.vatbub.smartcharge.Charger.switchCharger
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
 import com.github.vatbub.smartcharge.util.launchPeriodically
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import java.io.InterruptedIOException
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -39,14 +41,12 @@ object Daemon {
     val isRunning: Boolean
         get() = daemonJob != null
 
-    private fun start() = GlobalScope.launch {
+    private fun start() {
         logger.info("Starting the daemon...")
 
-        daemonJob = coroutineScope {
-            launchPeriodically(1.minutes) {
-                determineCurrentChargingMode()
-                    .switchChargerAccordingToChargingMode()
-            }
+        daemonJob = GlobalScope.launchPeriodically(1.minutes) {
+            determineCurrentChargingMode()
+                .switchChargerAccordingToChargingMode()
         }
     }
 
@@ -108,8 +108,6 @@ object Daemon {
     fun applyConfiguration() {
         if (isRunning)
             logger.info("Applying configuration changes...")
-        else
-            logger.info("Starting the daemon...")
 
         stop()
         start()
