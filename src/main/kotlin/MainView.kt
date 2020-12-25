@@ -365,7 +365,15 @@ class MainView {
     fun showException(record: LogRecord) {
         if (delayLogUpdatesAndSuppressErrorDialogs) return
 
-        val alert = Alert(Alert.AlertType.ERROR)
+        val alertType = when (record.level) {
+            Level.CONFIG -> Alert.AlertType.INFORMATION
+            Level.INFO -> Alert.AlertType.INFORMATION
+            Level.WARNING -> Alert.AlertType.WARNING
+            Level.SEVERE -> Alert.AlertType.ERROR
+            else -> Alert.AlertType.INFORMATION
+        }
+
+        val alert = Alert(alertType)
         alert.title = when (record.level) {
             Level.CONFIG -> "SmartCharge: Configuration message"
             Level.INFO -> "SmartCharge: Information"
