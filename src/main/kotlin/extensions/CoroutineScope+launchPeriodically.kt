@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.util
+package com.github.vatbub.smartcharge.extensions
 
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
