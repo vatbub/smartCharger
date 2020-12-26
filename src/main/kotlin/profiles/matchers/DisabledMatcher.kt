@@ -17,25 +17,19 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.profiles
+package com.github.vatbub.smartcharge.profiles.matchers
 
 import org.jdom2.Attribute
 import org.jdom2.Element
 
-
-data class ApplicationStatusMatcher(val requirement: ApplicationStatus) : Matcher<ApplicationStatus> {
-    override fun matches(obj: ApplicationStatus): Boolean = obj == requirement
-
+class DisabledMatcher<T>(private val matcher: Matcher<T>) : Matcher<T> {
     override fun toXml(): Element =
-        matcherElement {
-            it.attributes.add(
-                Attribute("requirement", requirement.toString())
-            )
-        }
+        matcher.toXml()
+            .apply { attributes.add(Attribute("disabled", true.toString())) }
 
-    companion object : XmlSerializableCompanion<ApplicationStatusMatcher> {
-        override fun fromXml(element: Element) = ApplicationStatusMatcher(
-            ApplicationStatus.valueOf(element.getAttribute("requirement").value)
-        )
-    }
+    override fun matches(obj: T): Boolean = true
+
+    fun enabled() = matcher
 }
+
+fun <T> Matcher<T>.disabled() = DisabledMatcher(this)

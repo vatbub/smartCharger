@@ -21,11 +21,12 @@ package com.github.vatbub.smartcharge.profiles.conditions
 
 import com.github.vatbub.smartcharge.extensions.matcher
 import com.github.vatbub.smartcharge.profiles.*
+import com.github.vatbub.smartcharge.profiles.matchers.Matcher
 import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class ApplicationCondition(private val matcher: ApplicationMatcher) : ProfileCondition {
+class ApplicationCondition(private val matcher: Matcher<RunningApplication>) : ProfileCondition {
     override fun isActive(): Boolean =
         RunningApplication
             .getRunningApps()
@@ -36,10 +37,15 @@ class ApplicationCondition(private val matcher: ApplicationMatcher) : ProfileCon
             it.children.add(matcher.toXml())
         }
 
-    companion object : XmlSerializableCompanion<ApplicationCondition> {
+    override fun toString(): String = matcher.toString()
+
+    companion object : XmlSerializableCompanion<ApplicationCondition>, TypedXmlObjectCompanion {
+        override val type: String = "ApplicationCondition"
+
+        @Suppress("UNCHECKED_CAST")
         override fun fromXml(element: Element): ApplicationCondition =
             ApplicationCondition(
-                matcher = Matcher.fromXml(element.matcher) as ApplicationMatcher
+                matcher = Matcher.fromXml(element.matcher) as Matcher<RunningApplication>
             )
     }
 }

@@ -21,8 +21,22 @@ package com.github.vatbub.smartcharge.profiles
 
 import org.jdom2.Attribute
 import org.jdom2.Element
+import kotlin.time.ExperimentalTime
 
-fun profileElement(block: (Element) -> Unit) = Element("profile").apply(block)
-fun conditionElement(block: (Element) -> Unit) = Element("condition").apply(block)
-fun matcherElement(block: (Element) -> Unit) = Element("matcher").apply(block)
-fun requirementAttribute(value: String) = Attribute("requirement", value)
+@ExperimentalTime
+fun Profile.profileElement(block: (Element) -> Unit) = Element("profile").apply(block)
+fun TypedXmlObjectCompanion.conditionElement(block: (Element) -> Unit) = Element("condition")
+    .applyTypeAttributes(this)
+    .apply(block)
+
+fun TypedXmlObjectCompanion.matcherElement(block: (Element) -> Unit) = Element("matcher")
+    .applyTypeAttributes(this)
+    .apply(block)
+
+private fun Element.applyTypeAttributes(companion: TypedXmlObjectCompanion) = apply {
+    attributes.add(Attribute("type", companion.type))
+    if (companion is TypedXmlObjectWithSubtypeCompanion)
+        attributes.add(Attribute("subtype", companion.subtype))
+}
+
+fun Element.requirementAttribute(value: String) = attributes.add(Attribute("requirement", value))

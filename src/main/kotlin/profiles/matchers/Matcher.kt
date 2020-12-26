@@ -17,23 +17,27 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge.profiles.conditions
+package com.github.vatbub.smartcharge.profiles.matchers
 
+import com.github.vatbub.smartcharge.extensions.parseDisabled
 import com.github.vatbub.smartcharge.extensions.type
 import com.github.vatbub.smartcharge.profiles.XmlSerializable
 import com.github.vatbub.smartcharge.profiles.XmlSerializableCompanion
 import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
-interface ProfileCondition : XmlSerializable {
-    fun isActive(): Boolean
+interface Matcher<T> : XmlSerializable {
+    fun matches(obj: T): Boolean
 
     @ExperimentalTime
-    companion object : XmlSerializableCompanion<ProfileCondition> {
-        override fun fromXml(element: Element): ProfileCondition =
-            when (val type = element.type) {
-                ApplicationCondition.type -> ApplicationCondition.fromXml(element)
-                else -> throw IllegalArgumentException("ProfileCondition type $type unknown")
-            }
+    companion object : XmlSerializableCompanion<Matcher<*>> {
+        override fun fromXml(element: Element): Matcher<*> = when (val type = element.type) {
+            ApplicationMatcher.type -> ApplicationMatcher.fromXml(element)
+            ApplicationStatusMatcher.type -> ApplicationStatusMatcher.fromXml(element)
+            IntMatcher.type -> IntMatcher.fromXml(element)
+            OptionalStringMatcher.type -> OptionalStringMatcher.fromXml(element)
+            StringMatcher.type -> StringMatcher.fromXml(element)
+            else -> throw IllegalArgumentException("Matcher type $type unknown")
+        }.parseDisabled(element)
     }
 }
