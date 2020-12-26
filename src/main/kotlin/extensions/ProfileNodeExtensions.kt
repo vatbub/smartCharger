@@ -26,6 +26,13 @@ import org.jdom2.Element
 val Element.matcher
     get() = this.childWithName("matcher")
 
+val Element.disabled: Boolean
+    get() {
+        val attribute = this.getAttribute("disabled") ?: return false
+        return listOf("true", "on", "1", "yes")
+            .contains(attribute.value.trim())
+    }
+
 val Element.condition
     get() = this.childWithName("condition")
 

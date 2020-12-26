@@ -19,8 +19,13 @@
  */
 package com.github.vatbub.smartcharge
 
-import com.github.vatbub.smartcharge.profiles.ApplicationMatcher
+import com.github.vatbub.smartcharge.extensions.toFxList
+import com.github.vatbub.smartcharge.profiles.ApplicationStatus
 import com.github.vatbub.smartcharge.profiles.Profile
+import com.github.vatbub.smartcharge.profiles.ProfileManager
+import com.github.vatbub.smartcharge.profiles.conditions.ApplicationCondition
+import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
+import com.github.vatbub.smartcharge.profiles.matchers.*
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -28,6 +33,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
+import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import kotlin.time.ExperimentalTime
@@ -59,10 +65,13 @@ class ProfileDialog {
     private lateinit var tableViewApplicationList: TableView<Profile>
 
     @FXML
-    private lateinit var columnApplication: TableColumn<Profile, ApplicationMatcher>
+    private lateinit var columnCondition: TableColumn<Profile, ProfileCondition>
 
     @FXML
     private lateinit var columnMode: TableColumn<Profile, ChargingMode>
+
+    @FXML
+    private lateinit var columnPriority: TableColumn<Profile, Int>
 
     @FXML
     private lateinit var columnEdit: TableColumn<Profile, Void>
@@ -72,15 +81,48 @@ class ProfileDialog {
 
     @FXML
     fun buttonAdd(event: ActionEvent?) {
+        val id = ProfileManager.profiles.size.toLong()
+        ProfileManager.profiles.add(
+            Profile(
+                id = id,
+                condition = ApplicationCondition(
+                    matcher = ApplicationMatcher(
+                        imageNameMatcher = StringMatcher.EqualsMatcher("chrome.exe"),
+                        pidMatcher = IntMatcher.EqualsMatcher(0).disabled(),
+                        sessionNameMatcher = StringMatcher.EqualsMatcher("").disabled(),
+                        sessionIdMatcher = IntMatcher.EqualsMatcher(0).disabled(),
+                        memoryUsageMatcher = StringMatcher.EqualsMatcher("").disabled(),
+                        statusMatcher = ApplicationStatusMatcher(ApplicationStatus.Running),
+                        userNameMatcher = OptionalStringMatcher.EqualsMatcher(null).disabled(),
+                        windowTitleMatcher = OptionalStringMatcher.EqualsMatcher(null).disabled()
+                    )
+                ),
+                priority = 0,
+                chargingMode = ChargingMode.AlwaysOn
+            )
+        )
+
+        refreshView()
     }
 
     @Suppress("SENSELESS_COMPARISON")
     @FXML
     fun initialize() {
-        assert(columnApplication != null) { "fx:id=\"columnApplication\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
         assert(tableViewApplicationList != null) { "fx:id=\"tableViewApplicationList\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
+        assert(columnCondition != null) { "fx:id=\"columnCondition\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
         assert(columnMode != null) { "fx:id=\"columnMode\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
+        assert(columnPriority != null) { "fx:id=\"columnPriority\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
         assert(columnEdit != null) { "fx:id=\"columnEdit\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
         assert(deleteColumn != null) { "fx:id=\"deleteColumn\" was not injected: check your FXML file 'ProfileDialog.fxml'." }
+
+        columnCondition.cellValueFactory = PropertyValueFactory(Profile::condition.name)
+        columnMode.cellValueFactory = PropertyValueFactory(Profile::chargingMode.name)
+        columnPriority.cellValueFactory = PropertyValueFactory(Profile::priority.name)
+
+        refreshView()
+    }
+
+    private fun refreshView() {
+        tableViewApplicationList.items = ProfileManager.profiles.toFxList()
     }
 }

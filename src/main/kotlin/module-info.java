@@ -39,4 +39,5 @@ module smartCharger {
     requires jdom2;
 
     opens com.github.vatbub.smartcharge;
+    opens com.github.vatbub.smartcharge.profiles;
 }
