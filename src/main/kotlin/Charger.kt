@@ -68,7 +68,11 @@ object Charger {
         if (expectedChargerState == Unknown) return
         val currentChargerState = BatteryInfo.currentChargerState
         if (expectedChargerState != currentChargerState)
-            logger.warn("Please verify that your charger is working. Your charger is $currentChargerState but should be $expectedChargerState")
+            logger.warn(
+                "Please verify that your charger is working. " +
+                        "Your charger is ${currentChargerState.toString().toLowerCase()} " +
+                        "but should be ${expectedChargerState.toString().toLowerCase()}"
+            )
     }
 
     private var expectedChargerState: ChargerState = Unknown
