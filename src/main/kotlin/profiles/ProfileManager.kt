@@ -19,9 +19,11 @@
  */
 package com.github.vatbub.smartcharge.profiles
 
+import com.github.vatbub.smartcharge.ChargingMode
 import com.github.vatbub.smartcharge.Keys
 import com.github.vatbub.smartcharge.extensions.profiles
 import com.github.vatbub.smartcharge.preferences
+import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
 import com.github.vatbub.smartcharge.util.ObservableList
 import org.jdom2.Document
 import org.jdom2.Element
@@ -29,6 +31,7 @@ import org.jdom2.input.SAXBuilder
 import org.jdom2.output.Format
 import org.jdom2.output.XMLOutputter
 import java.io.FileWriter
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 
@@ -57,6 +60,15 @@ object ProfileManager {
     fun getActiveProfile(): Profile? = profiles
         .sortedByDescending(Profile::priority)
         .firstOrNull { it.condition.isActive() }
+
+    private val atomicNextProfileId by lazy {
+        val currentMax = profiles.map { it.id }.maxOrNull() ?: 0
+        AtomicLong(currentMax + 1)
+    }
+
+    fun createNewProfile(condition: ProfileCondition, priority: Int, chargingMode: ChargingMode): Profile =
+        Profile(atomicNextProfileId.getAndIncrement(), condition, priority, chargingMode)
+            .also { profiles.add(it) }
 
     private fun readXml(): List<Profile> {
         val xmlFile = preferences[Keys.Profiles.XmlFileLocation]
