@@ -20,22 +20,28 @@
 package com.github.vatbub.smartcharge
 
 import com.github.vatbub.smartcharge.extensions.toFxList
-import com.github.vatbub.smartcharge.profiles.ApplicationStatus
 import com.github.vatbub.smartcharge.profiles.Profile
 import com.github.vatbub.smartcharge.profiles.ProfileManager
 import com.github.vatbub.smartcharge.profiles.conditions.ApplicationCondition
 import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
 import com.github.vatbub.smartcharge.profiles.matchers.*
+import com.github.vatbub.smartcharge.util.javafx.ButtonCell
+import com.github.vatbub.smartcharge.util.javafx.IntStringConverter
+import com.github.vatbub.smartcharge.util.javafx.SimpleCellValueFactory
 import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.control.*
+import javafx.scene.control.ButtonBar.ButtonData
+import javafx.scene.control.cell.ComboBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.control.cell.TextFieldTableCell
 import javafx.scene.image.Image
 import javafx.stage.Stage
+import javafx.util.Callback
 import kotlin.time.ExperimentalTime
 
 
@@ -74,32 +80,22 @@ class ProfileDialog {
     private lateinit var columnPriority: TableColumn<Profile, Int>
 
     @FXML
-    private lateinit var columnEdit: TableColumn<Profile, Void>
+    private lateinit var columnEdit: TableColumn<Profile, Profile>
 
     @FXML
-    private lateinit var deleteColumn: TableColumn<Profile, Void>
+    private lateinit var deleteColumn: TableColumn<Profile, Profile>
 
     @FXML
     fun buttonAdd(event: ActionEvent?) {
-        val id = ProfileManager.profiles.size.toLong()
-        ProfileManager.profiles.add(
-            Profile(
-                id = id,
-                condition = ApplicationCondition(
-                    matcher = ApplicationMatcher(
-                        imageNameMatcher = StringMatcher.EqualsMatcher("chrome.exe"),
-                        pidMatcher = IntMatcher.EqualsMatcher(0).disabled(),
-                        sessionNameMatcher = StringMatcher.EqualsMatcher("").disabled(),
-                        sessionIdMatcher = IntMatcher.EqualsMatcher(0).disabled(),
-                        memoryUsageMatcher = StringMatcher.EqualsMatcher("").disabled(),
-                        statusMatcher = ApplicationStatusMatcher(ApplicationStatus.Running),
-                        userNameMatcher = OptionalStringMatcher.EqualsMatcher(null).disabled(),
-                        windowTitleMatcher = OptionalStringMatcher.EqualsMatcher(null).disabled()
-                    )
-                ),
-                priority = 0,
-                chargingMode = ChargingMode.AlwaysOn
-            )
+        ProfileConditionMainView.show()
+        ProfileManager.createNewProfile(
+            condition = ApplicationCondition(
+                matcher = ApplicationMatcher(
+                    imageNameMatcher = StringMatcher.EqualsMatcher("chrome.exe")
+                )
+            ),
+            priority = 0,
+            chargingMode = ChargingMode.AlwaysOn
         )
 
         refreshView()
@@ -118,6 +114,21 @@ class ProfileDialog {
         columnCondition.cellValueFactory = PropertyValueFactory(Profile::condition.name)
         columnMode.cellValueFactory = PropertyValueFactory(Profile::chargingMode.name)
         columnPriority.cellValueFactory = PropertyValueFactory(Profile::priority.name)
+        columnEdit.cellValueFactory = SimpleCellValueFactory { this }
+        deleteColumn.cellValueFactory = SimpleCellValueFactory { this }
+
+        columnMode.cellFactory = ComboBoxTableCell.forTableColumn(*ChargingMode.values())
+        columnMode.onEditCommit = EventHandler<TableColumn.CellEditEvent<Profile, ChargingMode>> { event ->
+            val index = ProfileManager.profiles.indexOf(event.rowValue)
+            ProfileManager.profiles[index] = event.rowValue.copy(chargingMode = event.newValue)
+        }
+        columnPriority.cellFactory = TextFieldTableCell.forTableColumn(IntStringConverter())
+        columnPriority.onEditCommit = EventHandler<TableColumn.CellEditEvent<Profile, Int>> { event ->
+            val index = ProfileManager.profiles.indexOf(event.rowValue)
+            ProfileManager.profiles[index] = event.rowValue.copy(priority = event.newValue)
+        }
+        columnEdit.cellFactory = editButtonCellFactory
+        deleteColumn.cellFactory = deleteButtonCellFactory
 
         refreshView()
     }
@@ -125,4 +136,31 @@ class ProfileDialog {
     private fun refreshView() {
         tableViewApplicationList.items = ProfileManager.profiles.toFxList()
     }
+
+    private val editButtonCellFactory by lazy {
+        Callback<TableColumn<Profile, Profile>, TableCell<Profile, Profile>> { column ->
+            ButtonCell("Edit") { item, event -> println("Edit pressed, profile id: ${item.id}") }
+        }
+    }
+
+    private val deleteButtonCellFactory by lazy {
+        Callback<TableColumn<Profile, Profile>, TableCell<Profile, Profile>> {
+            ButtonCell("Delete") { item, _ ->
+                val alert = Alert(Alert.AlertType.CONFIRMATION).apply {
+                    title = "Confirm profile deletion"
+                    contentText = "Are you sure that this profile shall be permanently deleted?"
+                    buttonTypes.setAll(
+                        ButtonType("Yes", ButtonData.YES),
+                        ButtonType("No", ButtonData.NO)
+                    )
+                }
+                alert.showAndWait().ifPresent { type ->
+                    if (type.buttonData != ButtonData.YES) return@ifPresent
+                    ProfileManager.profiles.remove(item)
+                    refreshView()
+                }
+            }
+        }
+    }
 }
+

@@ -29,7 +29,6 @@
                 <RowConstraints vgrow="NEVER"/>
                 <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
                 <RowConstraints vgrow="NEVER"/>
-                <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label text="Some basic settings:" GridPane.columnSpan="2147483647">
@@ -135,9 +134,8 @@
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
                     <children>
-                        <CheckBox fx:id="checkBoxProfiles" mnemonicParsing="false"
-                                  text="Use profiles:" wrapText="true" GridPane.columnSpan="2147483647"
-                                  GridPane.rowIndex="8"/>
+                        <CheckBox fx:id="checkBoxProfiles" mnemonicParsing="false" text="Use profiles:" wrapText="true"
+                                  GridPane.columnSpan="2147483647" GridPane.rowIndex="8"/>
                         <Button fx:id="buttonChangeProfileSettings" mnemonicParsing="false"
                                 onAction="#buttonChangeProfileSettingsOnAction" text="Change profile settings"
                                 textAlignment="CENTER"/>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" vgap="5.0" xmlns="http://javafx.com/javafx/8"
+          fx:controller="com.github.vatbub.smartcharge.ApplicationConditionView">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity"/>
+        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label text="Image name"/>
+        <Label text="PID (Process id)" GridPane.rowIndex="1"/>
+        <Label text="Session name" GridPane.rowIndex="2"/>
+        <Label text="Session id" GridPane.rowIndex="3"/>
+        <Label text="Memory usage (in KB)" GridPane.rowIndex="4"/>
+        <Label text="Status" GridPane.rowIndex="5"/>
+        <Label text="User name" GridPane.rowIndex="6"/>
+        <Label text="Window title" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="comboBoxModeImageName" prefWidth="150.0" GridPane.columnIndex="1"/>
+        <ComboBox fx:id="comboBoxModePid" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="comboBoxModeSessionName" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="comboBoxModeSessionId" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="comboBoxModeMemoryUsage" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="comboBoxModeStatus" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <ComboBox fx:id="comboBoxModeUserName" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <ComboBox fx:id="comboBoxModeWindowTitle" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <TextField fx:id="textFieldValueSessionName" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <TextField fx:id="textFieldValueSessionId" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <TextField fx:id="textFieldValueMemoryUsage" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+        <TextField fx:id="textFieldValueUserName" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+        <TextField fx:id="textFieldValueWindowTitle" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="comboBoxValueImageName" editable="true" prefWidth="150.0" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="comboBoxValueStatus" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+        <TextField fx:id="textFieldValuePid" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+    </children>
+</GridPane>
