@@ -21,12 +21,13 @@ package com.github.vatbub.smartcharge.profiles.conditions
 
 import com.github.vatbub.smartcharge.extensions.matcher
 import com.github.vatbub.smartcharge.profiles.*
+import com.github.vatbub.smartcharge.profiles.matchers.ApplicationMatcher
 import com.github.vatbub.smartcharge.profiles.matchers.Matcher
 import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class ApplicationCondition(private val matcher: Matcher<RunningApplication>) : ProfileCondition {
+class ApplicationCondition(private val matcher: Matcher<RunningApplication> = ApplicationMatcher()) : ProfileCondition {
     override fun isActive(): Boolean =
         RunningApplication
             .getRunningApps()

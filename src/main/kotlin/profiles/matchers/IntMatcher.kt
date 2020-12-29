@@ -27,7 +27,7 @@ import org.jdom2.Element
 
 
 sealed class IntMatcher : Matcher<Int> {
-    data class EqualsMatcher(val requirement: Int) : IntMatcher() {
+    data class EqualsMatcher(val requirement: Int = 0) : IntMatcher() {
         override fun matches(obj: Int): Boolean = obj == requirement
 
         override fun toXml(): Element = matcherElement { it.requirementAttribute(requirement.toString()) }

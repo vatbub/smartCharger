@@ -29,7 +29,7 @@ data class RunningApplication constructor(
     val pid: Int,
     val sessionName: String,
     val sessionId: Int,
-    val memoryUsage: String,
+    val memoryUsage: Int,
     val status: ApplicationStatus,
     val userName: String?,
     val cpuTime: Duration,

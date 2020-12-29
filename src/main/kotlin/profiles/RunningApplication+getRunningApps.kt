@@ -31,17 +31,17 @@ fun RunningApplication.Companion.getRunningApps(): List<RunningApplication> {
         input.readLines()
     }.map {
         val parts = it.split(",")
-                .map { part -> part.removePrefix("\"").removeSuffix("\"") }
+            .map { part -> part.removePrefix("\"").removeSuffix("\"") }
         RunningApplication(
-                imageName = parts[0],
-                pid = parts[1].toInt(),
-                sessionName = parts[2],
-                sessionId = parts[3].toInt(),
-                memoryUsage = parts[4],
-                status = ApplicationStatus.fromWindowsName(parts[5]),
-                userName = parts[6].toNullIfNotApplicable(),
-                cpuTime = parts[7].toDuration(),
-                windowTitle = parts[8].toNullIfNotApplicable()
+            imageName = parts[0],
+            pid = parts[1].toInt(),
+            sessionName = parts[2],
+            sessionId = parts[3].toInt(),
+            memoryUsage = parts[4].removeSuffix(" K").replace(".", "").toInt(),
+            status = ApplicationStatus.fromWindowsName(parts[5]),
+            userName = parts[6].toNullIfNotApplicable(),
+            cpuTime = parts[7].toDuration(),
+            windowTitle = parts[8].toNullIfNotApplicable()
         )
     }
 }

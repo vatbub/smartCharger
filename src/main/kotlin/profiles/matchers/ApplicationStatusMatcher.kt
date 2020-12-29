@@ -24,7 +24,8 @@ import com.github.vatbub.smartcharge.profiles.*
 import org.jdom2.Element
 
 
-data class ApplicationStatusMatcher(val requirement: ApplicationStatus) : Matcher<ApplicationStatus> {
+data class ApplicationStatusMatcher(val requirement: ApplicationStatus = ApplicationStatus.Running) :
+    Matcher<ApplicationStatus> {
     override fun matches(obj: ApplicationStatus): Boolean = obj == requirement
 
     override fun toXml(): Element =

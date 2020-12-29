@@ -26,14 +26,14 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 data class ApplicationMatcher(
-    val imageNameMatcher: Matcher<String>,
-    val pidMatcher: Matcher<Int>,
-    val sessionNameMatcher: Matcher<String>,
-    val sessionIdMatcher: Matcher<Int>,
-    val memoryUsageMatcher: Matcher<String>,
-    val statusMatcher: Matcher<ApplicationStatus>,
-    val userNameMatcher: Matcher<String?>,
-    val windowTitleMatcher: Matcher<String?>
+    val imageNameMatcher: Matcher<String> = StringMatcher.EqualsMatcher().disabled(),
+    val pidMatcher: Matcher<Int> = IntMatcher.EqualsMatcher().disabled(),
+    val sessionNameMatcher: Matcher<String> = StringMatcher.EqualsMatcher().disabled(),
+    val sessionIdMatcher: Matcher<Int> = IntMatcher.EqualsMatcher().disabled(),
+    val memoryUsageMatcher: Matcher<Int> = IntMatcher.EqualsMatcher().disabled(),
+    val statusMatcher: Matcher<ApplicationStatus> = ApplicationStatusMatcher().disabled(),
+    val userNameMatcher: Matcher<String?> = OptionalStringMatcher.EqualsMatcher().disabled(),
+    val windowTitleMatcher: Matcher<String?> = OptionalStringMatcher.EqualsMatcher().disabled()
 ) : Matcher<RunningApplication> {
     override fun matches(obj: RunningApplication): Boolean =
         imageNameMatcher.matches(obj.imageName) &&
@@ -84,7 +84,7 @@ data class ApplicationMatcher(
                 pidMatcher = IntMatcher.fromXml(element.pid).parseDisabled(element.pid),
                 sessionNameMatcher = StringMatcher.fromXml(element.sessionName).parseDisabled(element.sessionName),
                 sessionIdMatcher = IntMatcher.fromXml(element.sessionId).parseDisabled(element.sessionId),
-                memoryUsageMatcher = StringMatcher.fromXml(element.memoryUsage).parseDisabled(element.memoryUsage),
+                memoryUsageMatcher = IntMatcher.fromXml(element.memoryUsage).parseDisabled(element.memoryUsage),
                 statusMatcher = ApplicationStatusMatcher.fromXml(element.status).parseDisabled(element.status),
                 userNameMatcher = OptionalStringMatcher.fromXml(element.userName).parseDisabled(element.userName),
                 windowTitleMatcher = OptionalStringMatcher.fromXml(element.windowTitle)

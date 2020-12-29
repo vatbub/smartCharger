@@ -43,7 +43,7 @@ sealed class OptionalStringMatcher : Matcher<String?> {
         }
     }
 
-    class EqualsMatcher(private val requirement: String?) : OptionalStringMatcher() {
+    class EqualsMatcher(private val requirement: String? = null) : OptionalStringMatcher() {
         override fun matches(obj: String?): Boolean = obj == requirement
 
         override fun toXml() = matcherElement {

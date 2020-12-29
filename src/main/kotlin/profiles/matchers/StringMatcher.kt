@@ -39,7 +39,7 @@ sealed class StringMatcher : Matcher<String> {
         }
     }
 
-    class EqualsMatcher(private val requirement: String) : StringMatcher() {
+    class EqualsMatcher(private val requirement: String = "") : StringMatcher() {
         override fun matches(obj: String): Boolean = obj == requirement
 
         override fun toXml() = matcherElement {
