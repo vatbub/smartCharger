@@ -35,7 +35,7 @@ class RunningAppsListTest {
     @Test
     fun printRunningAppsWithWindowTitleTest() = assertDoesNotThrow {
         RunningApplication.getRunningApps()
-                .filter { it.windowTitle != null }
-                .forEach { println("${it.imageName} - ${it.windowTitle}") }
+            .filter { it.windowTitle != null }
+            .forEach { println("${it.imageName} - ${it.windowTitle} - ${it.memoryUsage}") }
     }
 }
