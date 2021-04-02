@@ -37,7 +37,7 @@ fun RunningApplication.Companion.getRunningApps(): List<RunningApplication> {
             pid = parts[1].toInt(),
             sessionName = parts[2],
             sessionId = parts[3].toInt(),
-            memoryUsage = parts[4].removeSuffix(" K").replace(".", "").toInt(),
+            memoryUsage = parts[4].removeSuffix(" K").replace(".", "").toIntOrNull() ?: 0,
             status = ApplicationStatus.fromWindowsName(parts[5]),
             userName = parts[6].toNullIfNotApplicable(),
             cpuTime = parts[7].toDuration(),
