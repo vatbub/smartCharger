@@ -22,9 +22,9 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.Charger.ChargerState.Off
 import com.github.vatbub.smartcharge.Charger.ChargerState.On
 import com.github.vatbub.smartcharge.Charger.switchCharger
+import com.github.vatbub.smartcharge.extensions.launchPeriodically
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
-import com.github.vatbub.smartcharge.util.launchPeriodically
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
