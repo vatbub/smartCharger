@@ -26,7 +26,7 @@ module smartCharger {
     requires java.logging;
     requires org.slf4j;
     requires javafx.graphics;
-    requires oshi.core;
+    requires com.github.oshi;
     requires jcommander;
     requires kotlinPreferences;
     requires okhttp3;

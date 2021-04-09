@@ -26,7 +26,7 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 object BatteryInfo {
-    private val powerSources: Array<out PowerSource>
+    private val powerSources: List<PowerSource>
         get() {
             val sources = SystemInfo().hardware.powerSources
             if (sources == null || sources.isEmpty())
