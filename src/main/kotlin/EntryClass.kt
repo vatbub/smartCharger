@@ -25,14 +25,18 @@ import com.github.vatbub.smartcharge.Charger.ChargerState.Off
 import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.exceptionHandler
 import com.github.vatbub.smartcharge.logging.logger
+import de.jangassen.MenuToolkit
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.Menu
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import org.apache.commons.lang3.SystemUtils
+import java.awt.Taskbar
+import java.awt.Toolkit
 import java.awt.TrayIcon
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
@@ -140,7 +144,14 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
 
         val scene = Scene(root)
         primaryStage.title = "SmartCharger"
-        primaryStage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+        val iconName = "icon.png"
+        primaryStage.icons.add(Image(javaClass.getResourceAsStream(iconName)))
+
+        if (SystemUtils.IS_OS_MAC) {
+            setDockIconOnMac(iconName)
+            setMacMenuBar(primaryStage.title)
+        }
+
         primaryStage.minWidth = root.minWidth(0.0) + 70
         primaryStage.minHeight = root.minHeight(0.0) + 70
 
@@ -149,7 +160,11 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
         primaryStage.setOnCloseRequest {
             if (!preferences[Keys.TrayMessageShown]) {
                 preferences[Keys.TrayMessageShown] = true
-                SystemTrayManager.showTrayMessage("Smart charge", "Smart charge is still working in the background. Check the system tray icon to see more.", TrayIcon.MessageType.INFO)
+                SystemTrayManager.showTrayMessage(
+                    "Smart charge",
+                    "Smart charge is still working in the background. Check the system tray icon to see more.",
+                    TrayIcon.MessageType.INFO
+                )
             }
 
             hideMainView()
@@ -157,6 +172,21 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
         }
 
         showMainView()
+    }
+
+    @Suppress("SameParameterValue")
+    private fun setDockIconOnMac(iconResourceName: String) {
+        val awtToolkit = Toolkit.getDefaultToolkit()
+        if (!Taskbar.isTaskbarSupported()) return
+
+        val imageResource = javaClass.getResource(iconResourceName)
+        val taskbar = Taskbar.getTaskbar()
+        taskbar.iconImage = awtToolkit.getImage(imageResource)
+    }
+
+    private fun setMacMenuBar(appName: String) = with(MenuToolkit.toolkit()) {
+        val defaultApplicationMenu: Menu = createDefaultApplicationMenu(appName)
+        setApplicationMenu(defaultApplicationMenu)
     }
 
     fun hideMainView() {
