@@ -23,6 +23,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -33,9 +34,9 @@ fun CoroutineScope.launchPeriodically(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context, start) {
-    delay(initialDelay)
+    delay(initialDelay.toLong(DurationUnit.MILLISECONDS))
     while (isActive) {
         block(this)
-        delay(timeBetweenExecutions)
+        delay(timeBetweenExecutions.toLong(DurationUnit.MILLISECONDS))
     }
 }

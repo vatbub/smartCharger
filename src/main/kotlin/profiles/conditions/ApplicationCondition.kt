@@ -27,7 +27,7 @@ import org.jdom2.Element
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class ApplicationCondition(private val matcher: Matcher<RunningApplication> = ApplicationMatcher()) : ProfileCondition {
+class ApplicationCondition(val matcher: Matcher<RunningApplication> = ApplicationMatcher()) : ProfileCondition {
     override fun isActive(): Boolean =
         RunningApplication
             .getRunningApps()

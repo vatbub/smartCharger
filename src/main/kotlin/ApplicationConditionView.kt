@@ -20,14 +20,20 @@
 package com.github.vatbub.smartcharge
 
 import com.github.vatbub.smartcharge.profiles.ApplicationStatus
+import com.github.vatbub.smartcharge.profiles.RunningApplication
+import com.github.vatbub.smartcharge.profiles.conditions.ApplicationCondition
+import com.github.vatbub.smartcharge.profiles.getRunningApps
+import com.github.vatbub.smartcharge.profiles.matchers.ApplicationMatcher
+import com.github.vatbub.smartcharge.util.javafx.bindAndMap
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
-
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextField
+import kotlin.time.ExperimentalTime
 
 
-class ApplicationConditionView : ProfileConditionViewController() {
+@OptIn(ExperimentalTime::class)
+class ApplicationConditionView : ProfileConditionViewController<ApplicationCondition>() {
     @FXML
     private lateinit var comboBoxModeImageName: ComboBox<StringMatcherMode>
 
@@ -76,6 +82,7 @@ class ApplicationConditionView : ProfileConditionViewController() {
     @FXML
     private lateinit var textFieldValueWindowTitle: TextField
 
+    @OptIn(ExperimentalTime::class)
     @Suppress("SENSELESS_COMPARISON")
     @FXML
     fun initialize() {
@@ -106,55 +113,46 @@ class ApplicationConditionView : ProfileConditionViewController() {
         comboBoxModeWindowTitle.items = FXCollections.observableArrayList(*OptionalStringMatcherMode.values())
 
 
-        comboBoxModeImageName.selectionModel.selectedItemProperty()
-            .addListener { _, _, newValue -> comboBoxValueImageName.isDisable = newValue == StringMatcherMode.Disabled }
-        comboBoxModePid.selectionModel.selectedItemProperty()
-            .addListener { _, _, newValue -> textFieldValuePid.isDisable = newValue == IntMatcherMode.Disabled }
-        comboBoxModeSessionName.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            textFieldValueSessionName.isDisable = newValue == StringMatcherMode.Disabled
-        }
-        comboBoxModeSessionId.selectionModel.selectedItemProperty()
-            .addListener { _, _, newValue -> textFieldValueSessionId.isDisable = newValue == IntMatcherMode.Disabled }
-        comboBoxModeMemoryUsage.selectionModel.selectedItemProperty()
-            .addListener { _, _, newValue -> textFieldValueMemoryUsage.isDisable = newValue == IntMatcherMode.Disabled }
-        comboBoxModeStatus.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            comboBoxValueStatus.isDisable = newValue == ApplicationStatusMatcherMode.Disabled
-        }
-        comboBoxModeUserName.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            textFieldValueUserName.isDisable = newValue == OptionalStringMatcherMode.Disabled
-        }
-        comboBoxModeWindowTitle.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            textFieldValueWindowTitle.isDisable = newValue == OptionalStringMatcherMode.Disabled
-        }
+        comboBoxValueImageName.disableProperty()
+            .bindAndMap(comboBoxModeImageName.selectionModel.selectedItemProperty()) { it == StringMatcherMode.Disabled }
+        textFieldValuePid.disableProperty()
+            .bindAndMap(comboBoxModePid.selectionModel.selectedItemProperty()) { it == IntMatcherMode.Disabled }
+        textFieldValueSessionName.disableProperty()
+            .bindAndMap(comboBoxModeSessionName.selectionModel.selectedItemProperty()) { it == StringMatcherMode.Disabled }
+        textFieldValueSessionId.disableProperty()
+            .bindAndMap(comboBoxModeSessionId.selectionModel.selectedItemProperty()) { it == IntMatcherMode.Disabled }
+        textFieldValueMemoryUsage.disableProperty()
+            .bindAndMap(comboBoxModeMemoryUsage.selectionModel.selectedItemProperty()) { it == IntMatcherMode.Disabled }
+        comboBoxValueStatus.disableProperty()
+            .bindAndMap(comboBoxModeStatus.selectionModel.selectedItemProperty()) { it == ApplicationStatusMatcherMode.Disabled }
+        textFieldValueUserName.disableProperty()
+            .bindAndMap(comboBoxModeUserName.selectionModel.selectedItemProperty()) { it == OptionalStringMatcherMode.Disabled }
+        textFieldValueWindowTitle.disableProperty()
+            .bindAndMap(comboBoxModeWindowTitle.selectionModel.selectedItemProperty()) { it == OptionalStringMatcherMode.Disabled }
+
+        comboBoxValueImageName.items = FXCollections.observableArrayList(RunningApplication.getRunningApps().map(RunningApplication::imageName))
+        comboBoxValueStatus.items = FXCollections.observableArrayList(*ApplicationStatus.values())
+
+        textFieldValuePid
+        textFieldValueSessionName
+        textFieldValueSessionId
+        textFieldValueMemoryUsage
+        textFieldValueUserName
+        textFieldValueWindowTitle
     }
-}
 
-private enum class StringMatcherMode(private val stringRepresentation: String) {
-    Equals("equals"),
-    Regex("matches regex"),
-    Disabled("Ignore");
+    override fun onConditionSet(newCondition: ApplicationCondition) {
+        val matcher = newCondition.matcher as ApplicationMatcher
 
-    override fun toString(): String = stringRepresentation
-}
-
-private enum class OptionalStringMatcherMode(private val stringRepresentation: String) {
-    Equals("equals"),
-    Regex("matches regex"),
-    Disabled("Ignore");
-
-    override fun toString(): String = stringRepresentation
-}
-
-private enum class IntMatcherMode(private val stringRepresentation: String) {
-    Equals("equals"),
-    Lower("is lower than"),
-    LowerOrEquals("is lower than or equals"),
-    Greater("is greater than"),
-    GreaterOrEquals("is greater than or equals"),
-    Between("is between"),
-    Disabled("Ignore");
-
-    override fun toString(): String = stringRepresentation
+        comboBoxModeImageName.selectionModel.select(matcher.imageNameMatcher)
+        comboBoxModePid.selectionModel.select(matcher.pidMatcher)
+        comboBoxModeSessionName.selectionModel.select(matcher.sessionNameMatcher)
+        comboBoxModeSessionId.selectionModel.select(matcher.sessionIdMatcher)
+        comboBoxModeMemoryUsage.selectionModel.select(matcher.memoryUsageMatcher)
+        comboBoxModeStatus.selectionModel.select(matcher.statusMatcher)
+        comboBoxModeUserName.selectionModel.select(matcher.userNameMatcher)
+        comboBoxModeWindowTitle.selectionModel.select(matcher.windowTitleMatcher)
+    }
 }
 
 private enum class ApplicationStatusMatcherMode(private val stringRepresentation: String) {

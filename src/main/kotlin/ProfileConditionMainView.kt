@@ -20,7 +20,6 @@
 
 package com.github.vatbub.smartcharge
 
-import com.github.vatbub.smartcharge.ConditionType.Application
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -42,7 +41,7 @@ class ProfileConditionMainView {
 
             val stage = Stage()
             val scene = Scene(root)
-            stage.title = "SmartCharger ConditionEditor"
+            stage.title = "SmartCharger Condition Editor"
             stage.icons.add(Image(ProfileConditionMainView::class.java.getResourceAsStream("icon.png")))
 
             stage.minWidth = root.minWidth(0.0) + 70
@@ -60,7 +59,7 @@ class ProfileConditionMainView {
     @FXML
     private lateinit var anchorPaneContent: AnchorPane
 
-    private var currentController: ProfileConditionViewController? = null
+    private var currentController: ProfileConditionViewController<*>? = null
 
     @Suppress("SENSELESS_COMPARISON")
     @FXML
@@ -69,16 +68,8 @@ class ProfileConditionMainView {
         assert(anchorPaneContent != null) { "fx:id=\"anchorPaneContent\" was not injected: check your FXML file 'ProfileConditionMainView.fxml'." }
 
         comboBoxConditionType.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            val fxmlName = when (newValue) {
-                Application -> "ApplicationConditionView.fxml"
-                else -> {
-                    anchorPaneContent.children.clear()
-                    currentController = null
-                    return@addListener
-                }
-            }
 
-            val fxmlLoader = FXMLLoader(ProfileConditionMainView::class.java.getResource(fxmlName), null)
+            val fxmlLoader = FXMLLoader(ProfileConditionMainView::class.java.getResource(newValue.fxmlName), null)
             val root = fxmlLoader.load<Parent>()
             currentController = fxmlLoader.getController()
 
@@ -90,10 +81,8 @@ class ProfileConditionMainView {
     }
 }
 
-private enum class ConditionType(val stringRepresentation: String) {
-    Application("Application");
+private enum class ConditionType(val stringRepresentation: String, val fxmlName: String) {
+    Application("Application", "ApplicationConditionView.fxml");
 
     override fun toString(): String = stringRepresentation
 }
-
-abstract class ProfileConditionViewController

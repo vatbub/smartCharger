@@ -26,8 +26,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 @ExperimentalTime
 object Charger {
@@ -57,7 +58,7 @@ object Charger {
 
         lastChargerStateVerificationFuture?.cancel()
         lastChargerStateVerificationFuture = GlobalScope.launch {
-            delay(30.seconds)
+            delay(Duration.seconds(30).toLong(MILLISECONDS))
             verifyChargerState()
         }
         logger.debug(result.responseText)
