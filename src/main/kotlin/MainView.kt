@@ -114,7 +114,7 @@ class MainView {
 
     @FXML
     fun buttonLogIn(event: ActionEvent?) {
-        LogInView("https://ifttt.com/maker_webhooks/settings", "https://ifttt.com/") { apiKey ->
+        LogInView("https://ifttt.com/maker_webhooks/settings", "https://ifttt.com/home") { apiKey ->
             logger.info("Log in to IFTTT successful")
             textFieldIFTTTMakerApiKey.text = apiKey
             true

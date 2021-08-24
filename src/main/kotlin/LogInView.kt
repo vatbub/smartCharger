@@ -105,7 +105,7 @@ class LogInView(private val startUrl: String, private val loadStartUrlAgainIfThi
     }
 
     private fun getApiKeyFromHtmlSource(source: String) {
-        val pattern = Pattern.compile("<SPAN>https://maker\\.ifttt\\.com/use/.*</SPAN>", Pattern.CASE_INSENSITIVE)
+        val pattern = Pattern.compile("https://maker\\.ifttt\\.com/use/.*\\\\\\&quot;}&quot;}]},&quot;liveChannels", Pattern.CASE_INSENSITIVE)
         val matcher = pattern.matcher(source)
         if (!matcher.find()) {
             logger.error("We were expecting to find the IFTTT Api Key on this website, but something went wrong. Please report this to the developers!")
@@ -113,10 +113,10 @@ class LogInView(private val startUrl: String, private val loadStartUrlAgainIfThi
             return
         }
 
-        var matchingResult = matcher.group(0)
-        matchingResult = matchingResult.removeRange(0, 6)
-        matchingResult = matchingResult.removeRange(matchingResult.length - 7, matchingResult.length)
-        val apiKey = matchingResult.removePrefix("https://maker.ifttt.com/use/")
+        val matchingResult = matcher.group(0)
+        val apiKey = matchingResult
+                .removePrefix("https://maker.ifttt.com/use/")
+                .removeSuffix("\\&quot;}&quot;}]},&quot;liveChannels")
         val closeForm = onApiTokenReceived(apiKey)
         if (closeForm)
             stage.hide()
