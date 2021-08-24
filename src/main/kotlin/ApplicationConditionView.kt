@@ -144,20 +144,13 @@ class ApplicationConditionView : ProfileConditionViewController<ApplicationCondi
     override fun onConditionSet(newCondition: ApplicationCondition) {
         val matcher = newCondition.matcher as ApplicationMatcher
 
-        comboBoxModeImageName.selectionModel.select(matcher.imageNameMatcher)
-        comboBoxModePid.selectionModel.select(matcher.pidMatcher)
-        comboBoxModeSessionName.selectionModel.select(matcher.sessionNameMatcher)
-        comboBoxModeSessionId.selectionModel.select(matcher.sessionIdMatcher)
-        comboBoxModeMemoryUsage.selectionModel.select(matcher.memoryUsageMatcher)
-        comboBoxModeStatus.selectionModel.select(matcher.statusMatcher)
-        comboBoxModeUserName.selectionModel.select(matcher.userNameMatcher)
-        comboBoxModeWindowTitle.selectionModel.select(matcher.windowTitleMatcher)
+        comboBoxModeImageName.selectionModel.select(matcher.imageNameMatcher.matcherMode)
+        comboBoxModePid.selectionModel.select(matcher.pidMatcher.matcherMode)
+        comboBoxModeSessionName.selectionModel.select(matcher.sessionNameMatcher.matcherMode)
+        comboBoxModeSessionId.selectionModel.select(matcher.sessionIdMatcher.matcherMode)
+        comboBoxModeMemoryUsage.selectionModel.select(matcher.memoryUsageMatcher.matcherMode)
+        comboBoxModeStatus.selectionModel.select(matcher.statusMatcher.matcherMode)
+        comboBoxModeUserName.selectionModel.select(matcher.userNameMatcher.matcherMode)
+        comboBoxModeWindowTitle.selectionModel.select(matcher.windowTitleMatcher.matcherMode)
     }
-}
-
-private enum class ApplicationStatusMatcherMode(private val stringRepresentation: String) {
-    Equals("equals"),
-    Disabled("Ignore");
-
-    override fun toString(): String = stringRepresentation
 }
