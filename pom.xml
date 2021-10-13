@@ -34,6 +34,7 @@
     <properties>
         <gitRepoName>smartCharge</gitRepoName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainModule>smartCharger</mainModule>
         <mainClass>com.github.vatbub.smartcharge.MainKt</mainClass>
         <slf4j.version>1.7.32</slf4j.version>
         <jna.version>5.9.0</jna.version>
@@ -109,13 +110,13 @@
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
+            <artifactId>jna-platform-jpms</artifactId>
             <version>${jna.version}</version>
         </dependency>
         <dependency>
-            <groupId>tk.pratanumandal</groupId>
+            <groupId>in.pratanumandal</groupId>
             <artifactId>unique4j</artifactId>
-            <version>1.4</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>

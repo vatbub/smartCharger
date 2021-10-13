@@ -19,13 +19,13 @@
  */
 package com.github.vatbub.smartcharge
 
+import `in`.pratanumandal.unique4j.Unique4j
 import com.github.vatbub.smartcharge.ApplicationInstanceMessage.*
 import com.github.vatbub.smartcharge.Charger.ChargerState.Off
 import com.github.vatbub.smartcharge.Charger.ChargerState.On
 import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
-import tk.pratanumandal.unique4j.Unique4j
 import kotlin.time.ExperimentalTime
 
 private enum class ApplicationInstanceMessage {
