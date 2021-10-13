@@ -180,15 +180,225 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <!-- Create the jar-with-dependencies -->
-                        <id>buildMainExecutableJar</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC2</version>
+                <executions>
+                    <execution>
+                        <id>add-module-info</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <modules>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.beust</groupId>
+                                        <artifactId>jcommander</artifactId>
+                                        <version>1.81</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module jcommander {
+                                        exports com.beust.jcommander;
+                                        exports com.beust.jcommander.converters;
+                                        exports com.beust.jcommander.defaultprovider;
+                                        exports com.beust.jcommander.validators;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.jdom</groupId>
+                                        <artifactId>jdom2</artifactId>
+                                        <version>2.0.6</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module jdom2 {
+                                        exports org.jdom2;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.jetbrains.kotlinx</groupId>
+                                        <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+                                        <version>1.5.2</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module kotlinx.coroutines.core.jvm {
+                                        exports kotlinx.coroutines;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.squareup.okhttp3</groupId>
+                                        <artifactId>okhttp</artifactId>
+                                        <version>4.9.2</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module okhttp3 {
+                                        exports okhttp3;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.openjfx</groupId>
+                                        <artifactId>javafx-base</artifactId>
+                                        <version>${javafx.version}</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module javafx.baseEmpty {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.openjfx</groupId>
+                                        <artifactId>javafx-fxml</artifactId>
+                                        <version>${javafx.version}</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module javafx.fxmlEmpty {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.openjfx</groupId>
+                                        <artifactId>javafx-controls</artifactId>
+                                        <version>${javafx.version}</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module javafx.controlsEmpty {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.openjfx</groupId>
+                                        <artifactId>javafx-media</artifactId>
+                                        <version>${javafx.version}</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module javafx.mediaEmpty {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.openjfx</groupId>
+                                        <artifactId>javafx-web</artifactId>
+                                        <version>${javafx.version}</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module javafx.webEmpty {
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.apache.commons</groupId>
+                                        <artifactId>commons-lang3</artifactId>
+                                        <version>3.12.0</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module org.apache.commons.lang3 {
+                                        exports org.apache.commons.lang3;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.jetbrains</groupId>
+                                        <artifactId>annotations</artifactId>
+                                        <version>13.0</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module annotations {
+                                        exports org.intellij.lang.annotations;
+                                        exports org.jetbrains.annotations;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.squareup.okio</groupId>
+                                        <artifactId>okio</artifactId>
+                                        <version>2.8.0</version>
+                                    </artifact>
+
+                                    <moduleInfoSource>
+                                        module okio {
+                                        requires java.logging;
+
+                                        exports okio;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-runtime-image</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>jlink</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>com.github.akman</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jpackage-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jpackage</goal>
                         </goals>
                     </execution>
                 </executions>
