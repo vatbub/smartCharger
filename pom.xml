@@ -181,14 +181,21 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.tentackle</groupId>
+                <artifactId>tentackle-jlink-maven-plugin</artifactId>
+                <version>17.8.0.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- <addModules><module>${mainModule}</module></addModules>
+                    <mainModule>${mainModule}</mainModule> -->
+                    <mainClass>${mainClass}</mainClass>
+                </configuration>
                 <executions>
                     <execution>
-                        <!-- Create the jar-with-dependencies -->
-                        <id>buildMainExecutableJar</id>
+                        <id>generate-jpackage</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>jpackage</goal>
                         </goals>
                     </execution>
                 </executions>
