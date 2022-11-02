@@ -58,3 +58,5 @@ Smart Charger supports different charging modes:
 You can switch modes by simply right-clicking the tray-icon or by opening the GUI and switching there.
  
 ## Compilation prerequisites
+- Java 9 or newer
+- Maven 3.8 or newer
