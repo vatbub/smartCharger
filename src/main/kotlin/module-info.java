@@ -34,7 +34,6 @@ module smartCharger {
     requires javafx.fxml;
     requires unique4j;
     requires javafx.controls;
-    requires javafx.web;
     requires kotlinx.coroutines.core.jvm;
     requires nsmenufx;
     requires org.jdom2;
