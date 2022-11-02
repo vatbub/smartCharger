@@ -62,7 +62,7 @@ object ProfileManager {
         .firstOrNull { it.condition.isActive() }
 
     private val atomicNextProfileId by lazy {
-        val currentMax = profiles.map { it.id }.maxOrNull() ?: 0
+        val currentMax = profiles.maxOfOrNull { it.id } ?: 0
         AtomicLong(currentMax + 1)
     }
 

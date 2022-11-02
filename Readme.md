@@ -36,7 +36,7 @@ You will find the compiled jar under `target/smartCharger-1.0-SNAPSHOT-jar-with-
 7. Under `Event Name` paste the following: `laptopStartCharging`
 8. Click on `Create trigger`.
 9. Click on `That`.
-10. Search for the manufacturer of your smart plug, click it and follow the set up process to switch the plug ON.
+10. Search for the manufacturer of your smart plug, click it and follow the set-up process to switch the plug ON.
 11. Disable `Receive notifications...` if you do not wish to receive notifications when Smart charger is doing something.
 12. Click `Finish`.
 13. Repeat steps 3 through 12, but with the event name being `laptopStopCharging` and the smart plug turning OFF instead.
@@ -51,7 +51,7 @@ After being done with the IFTTT setup, you may set Smart Charger up on your lapt
 
 ## Charging modes
 Smart Charger supports different charging modes:
-- Optimized charging: Switches the charger on and off automatically in order to keep the battery level between 25% and 80%. Recommended for normal day to day work which is does not require high performance.
+- Optimized charging: Switches the charger on and off automatically in order to keep the battery level between 25% and 80%. Recommended for normal day-to-day work which is does not require high performance.
 - Full charge: Switches the charger on all the time. Recommended if you need all the performance of your laptop (some laptops will slow down if they are on battery) or if you want your laptop to be charged to 100%.
 - Stop charging: Will discharge your laptop completely.
 

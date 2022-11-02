@@ -31,7 +31,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.util.logging.*
 import kotlin.properties.Delegates
-import kotlin.time.ExperimentalTime
 
 object LoggingHandlers {
     object FileHandlerLock
@@ -132,7 +131,7 @@ object LoggingHandlers {
     object TextFieldHandler : Handler() {
         private object Lock
 
-        var loggingTextFlow: TextFlow? by Delegates.observable<TextFlow?>(null) { _, _, newValue -> publishDelayedTextNodes(newTextFlow = newValue) }
+        var loggingTextFlow: TextFlow? by Delegates.observable(null) { _, _, newValue -> publishDelayedTextNodes(newTextFlow = newValue) }
         private val delayedTextNodes = mutableListOf<Text>()
         var delayLogUpdates by Delegates.observable(false) { _, _, newValue -> publishDelayedTextNodes(newValue) }
 

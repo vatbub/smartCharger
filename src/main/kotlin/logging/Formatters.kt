@@ -29,7 +29,7 @@ import java.util.logging.SimpleFormatter
 class OneLineFormatter : SimpleFormatter() {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
 
-    override fun format(record: LogRecord): String? {
+    override fun format(record: LogRecord): String {
         val timestamp = Date(record.millis)
         val res = StringBuilder("[${record.level}] [${dateFormat.format(timestamp)}] ${record.message}\r\n")
         if (record.thrown != null)  // An exception is associated with the record

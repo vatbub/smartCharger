@@ -36,8 +36,8 @@ module smartCharger {
     requires javafx.controls;
     requires javafx.web;
     requires kotlinx.coroutines.core.jvm;
-    requires jdom2;
     requires nsmenufx;
+    requires org.jdom2;
 
     opens com.github.vatbub.smartcharge;
     opens com.github.vatbub.smartcharge.profiles;

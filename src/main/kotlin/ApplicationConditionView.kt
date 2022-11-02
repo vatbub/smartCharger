@@ -29,10 +29,8 @@ import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextField
-import kotlin.time.ExperimentalTime
 
 
-@OptIn(ExperimentalTime::class)
 class ApplicationConditionView : ProfileConditionViewController<ApplicationCondition>() {
     @FXML
     private lateinit var comboBoxModeImageName: ComboBox<StringMatcherMode>
@@ -82,7 +80,6 @@ class ApplicationConditionView : ProfileConditionViewController<ApplicationCondi
     @FXML
     private lateinit var textFieldValueWindowTitle: TextField
 
-    @OptIn(ExperimentalTime::class)
     @Suppress("SENSELESS_COMPARISON")
     @FXML
     fun initialize() {

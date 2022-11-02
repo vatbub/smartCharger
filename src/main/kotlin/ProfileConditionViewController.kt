@@ -2,11 +2,7 @@ package com.github.vatbub.smartcharge
 
 import com.github.vatbub.smartcharge.profiles.ApplicationStatus
 import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
-import com.github.vatbub.smartcharge.profiles.matcherElement
 import com.github.vatbub.smartcharge.profiles.matchers.*
-import com.github.vatbub.smartcharge.profiles.requirementAttribute
-import org.jdom2.Attribute
-import org.jdom2.Element
 
 abstract class ProfileConditionViewController<T : ProfileCondition> {
     var currentCondition: T? = null

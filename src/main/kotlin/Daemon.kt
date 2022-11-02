@@ -32,9 +32,7 @@ import kotlinx.coroutines.delay
 import java.io.InterruptedIOException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 object Daemon {
     private var daemonJob: Job? = null
 

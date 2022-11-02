@@ -118,7 +118,6 @@ class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) 
     }
 
     init {
-        @Suppress("SENSELESS_COMPARISON")
         if (callLaunch)
             launch(*args)
     }

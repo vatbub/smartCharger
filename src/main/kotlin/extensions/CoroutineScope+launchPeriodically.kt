@@ -24,7 +24,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 fun CoroutineScope.launchPeriodically(
     timeBetweenExecutions: Duration,

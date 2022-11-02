@@ -86,7 +86,7 @@ class ObservableList<E> private constructor(
 
     override fun removeAll(elements: Collection<E>): Boolean {
         val elementsToBeRemoved = elements.filter { list.contains(it) }
-        val result = list.removeAll(elements)
+        val result = list.removeAll(elements.toSet())
         elementsToBeRemoved.forEach { onRemove?.invoke(it) }
         return result
     }
@@ -97,7 +97,7 @@ class ObservableList<E> private constructor(
 
     override fun retainAll(elements: Collection<E>): Boolean {
         val elementsToBeRemoved = list.filterNot { elements.contains(it) }
-        val result = list.retainAll(elements)
+        val result = list.retainAll(elements.toSet())
         elementsToBeRemoved.forEach { onRemove?.invoke(it) }
         return result
     }

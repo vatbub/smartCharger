@@ -21,7 +21,6 @@ package com.github.vatbub.smartcharge.logging
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.time.ExperimentalTime
 
 val logger by lazy {
     LoggingHandlers.initializeIfUninitialized()

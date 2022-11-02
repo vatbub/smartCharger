@@ -28,7 +28,6 @@ import com.github.vatbub.smartcharge.profiles.ProfileManager
 import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
@@ -41,9 +40,9 @@ import java.util.*
 import java.util.logging.Level
 import java.util.logging.LogRecord
 import kotlin.properties.Delegates
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
-import kotlin.time.minutes
 
 
 class MainView {
@@ -174,7 +173,7 @@ class MainView {
         updateGuiFromConfiguration()
         LoggingHandlers.TextFieldHandler.loggingTextFlow = logTextFlow
         logTextFlow.children.addListener(
-            ListChangeListener<Node?> {
+            ListChangeListener {
                 logTextFlow.layout()
                 logScrollPane.layout()
                 logScrollPane.vvalue = 1.0
