@@ -33,7 +33,6 @@ import java.util.logging.*
 import kotlin.properties.Delegates
 import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object LoggingHandlers {
     object FileHandlerLock
     object InitLock
@@ -181,7 +180,6 @@ object LoggingHandlers {
 
     }
 
-    @ExperimentalTime
     object SystemTrayHandler : Handler() {
         init {
             this.level = LoggingConfiguration.trayLogLevel
@@ -208,7 +206,6 @@ object LoggingHandlers {
 
     }
 
-    @ExperimentalTime
     object GuiErrorMessageHandler : Handler() {
         init {
             this.level = LoggingConfiguration.guiErrorMessageLogLevel

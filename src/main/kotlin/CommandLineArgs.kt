@@ -21,9 +21,7 @@
 package com.github.vatbub.smartcharge
 
 import com.beust.jcommander.Parameter
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class CommandLineArgs {
     @Parameter(names = ["--help", "-h", "/?"], help = true)
     var help: Boolean = false

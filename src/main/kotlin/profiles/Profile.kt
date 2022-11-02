@@ -27,9 +27,7 @@ import com.github.vatbub.smartcharge.extensions.priority
 import com.github.vatbub.smartcharge.profiles.conditions.ProfileCondition
 import org.jdom2.Attribute
 import org.jdom2.Element
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 data class Profile(val id: Long, val condition: ProfileCondition, val priority: Int, val chargingMode: ChargingMode) :
     XmlSerializable {
     override fun toXml(): Element = profileElement {

@@ -24,12 +24,10 @@ import com.github.vatbub.smartcharge.extensions.type
 import com.github.vatbub.smartcharge.profiles.XmlSerializable
 import com.github.vatbub.smartcharge.profiles.XmlSerializableCompanion
 import org.jdom2.Element
-import kotlin.time.ExperimentalTime
 
 interface Matcher<T> : XmlSerializable {
     fun matches(obj: T): Boolean
 
-    @ExperimentalTime
     companion object : XmlSerializableCompanion<Matcher<*>> {
         override fun fromXml(element: Element): Matcher<*> = when (val type = element.type) {
             ApplicationMatcher.type -> ApplicationMatcher.fromXml(element)

@@ -25,15 +25,16 @@ import com.github.vatbub.smartcharge.Charger.switchCharger
 import com.github.vatbub.smartcharge.extensions.launchPeriodically
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import java.io.InterruptedIOException
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
-import kotlin.time.minutes
 
-@ExperimentalTime
+@OptIn(ExperimentalTime::class)
 object Daemon {
     private var daemonJob: Job? = null
 
@@ -41,6 +42,7 @@ object Daemon {
     val isRunning: Boolean
         get() = daemonJob != null
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun start() {
         logger.info("Starting the daemon...")
 

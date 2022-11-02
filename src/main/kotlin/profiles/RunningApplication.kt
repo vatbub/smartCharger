@@ -21,9 +21,7 @@
 package com.github.vatbub.smartcharge.profiles
 
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 data class RunningApplication constructor(
     val imageName: String,
     val pid: Int,

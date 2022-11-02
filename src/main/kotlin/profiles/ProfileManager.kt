@@ -35,8 +35,8 @@ import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 
+@OptIn(ExperimentalTime::class)
 @Suppress("UNUSED_PARAMETER")
-@ExperimentalTime
 object ProfileManager {
     var enabled: Boolean
         get() = preferences[Keys.Profiles.Enabled]

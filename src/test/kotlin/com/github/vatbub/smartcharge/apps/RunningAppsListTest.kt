@@ -23,9 +23,7 @@ import com.github.vatbub.smartcharge.profiles.RunningApplication
 import com.github.vatbub.smartcharge.profiles.getRunningApps
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class RunningAppsListTest {
     @Test
     fun printRunningAppsTest() = assertDoesNotThrow {

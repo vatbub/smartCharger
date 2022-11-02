@@ -42,10 +42,8 @@ import javafx.scene.control.cell.TextFieldTableCell
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import javafx.util.Callback
-import kotlin.time.ExperimentalTime
 
 
-@ExperimentalTime
 class ProfileDialog {
     companion object {
         fun show(): ProfileDialog {

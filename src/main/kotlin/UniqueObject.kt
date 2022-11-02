@@ -26,13 +26,11 @@ import com.github.vatbub.smartcharge.ChargingMode.*
 import com.github.vatbub.smartcharge.logging.logger
 import javafx.application.Platform
 import tk.pratanumandal.unique4j.Unique4j
-import kotlin.time.ExperimentalTime
 
 private enum class ApplicationInstanceMessage {
     ShowGui, ModeFull, ModeOptimized, ModeNoCharge, SwitchChargerOn, SwitchChargerOff
 }
 
-@ExperimentalTime
 private object MessageHelper {
     private const val separator = ";"
 
@@ -66,13 +64,11 @@ private object MessageHelper {
     fun decode(message: String): List<ApplicationInstanceMessage> {
         val splitResult = message.split(separator)
         return List(splitResult.size) {
-            @Suppress("RemoveRedundantQualifierName")
             ApplicationInstanceMessage.valueOf(splitResult[it])
         }
     }
 }
 
-@ExperimentalTime
 val unique = object : Unique4j(appId) {
     override fun sendMessage(): String {
         logger.warn("Another instance is already running, passing arguments to other instance...")

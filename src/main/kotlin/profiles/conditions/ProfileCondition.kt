@@ -23,12 +23,10 @@ import com.github.vatbub.smartcharge.extensions.type
 import com.github.vatbub.smartcharge.profiles.XmlSerializable
 import com.github.vatbub.smartcharge.profiles.XmlSerializableCompanion
 import org.jdom2.Element
-import kotlin.time.ExperimentalTime
 
 interface ProfileCondition : XmlSerializable {
     fun isActive(): Boolean
 
-    @ExperimentalTime
     companion object : XmlSerializableCompanion<ProfileCondition> {
         override fun fromXml(element: Element): ProfileCondition =
             when (val type = element.type) {

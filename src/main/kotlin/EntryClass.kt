@@ -39,12 +39,10 @@ import java.awt.Taskbar
 import java.awt.Toolkit
 import java.awt.TrayIcon
 import kotlin.system.exitProcess
-import kotlin.time.ExperimentalTime
 
 const val appId = "com.github.vatbub.smartCharge"
 const val scheduledTaskName = "Smart Charge Before Shutdown Hook"
 
-@ExperimentalTime
 class EntryClass private constructor(callLaunch: Boolean, vararg args: String?) : Application() {
     companion object {
         private lateinit var startupArgs: Array<out String>

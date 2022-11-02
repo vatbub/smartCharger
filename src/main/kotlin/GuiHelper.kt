@@ -20,9 +20,7 @@
 package com.github.vatbub.smartcharge
 
 import javafx.application.Platform
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object GuiHelper {
     fun showMainView() {
         if (EntryClass.instance == null)

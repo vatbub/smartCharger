@@ -46,7 +46,6 @@ import kotlin.time.TimeSource
 import kotlin.time.minutes
 
 
-@ExperimentalTime
 class MainView {
 
     var delayLogUpdatesAndSuppressErrorDialogs by Delegates.observable(false) { _, _, newValue ->
@@ -126,6 +125,7 @@ class MainView {
         ProfileDialog.show()
     }
 
+    @OptIn(ExperimentalTime::class)
     @FXML
     fun buttonApplyOverrideForProfilesOnAction(event: ActionEvent?) {
         val overrideDurationInMinutes = textBoxOverrideProfilesTimeInMinutes.text.toLong().minutes

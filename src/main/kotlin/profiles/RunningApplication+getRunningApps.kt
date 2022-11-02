@@ -20,9 +20,11 @@
 package com.github.vatbub.smartcharge.profiles
 
 import java.nio.charset.Charset
-import kotlin.time.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
-@ExperimentalTime
 fun RunningApplication.Companion.getRunningApps(): List<RunningApplication> {
     // Linux: val process = Runtime.getRuntime().exec("ps -e")
     val process = ProcessBuilder("tasklist.exe", "/fo", "csv", "/nh", "/v").start()
@@ -48,7 +50,6 @@ fun RunningApplication.Companion.getRunningApps(): List<RunningApplication> {
 
 private fun String.toNullIfNotApplicable(): String? = if (this in notApplicableTranslations) null else this
 
-@ExperimentalTime
 private fun String.toDuration(): Duration {
     val parts = this.split(":")
     return parts[0].toInt().hours + parts[0].toInt().minutes + parts[0].toInt().seconds

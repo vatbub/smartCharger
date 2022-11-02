@@ -21,9 +21,7 @@ package com.github.vatbub.smartcharge.profiles
 
 import org.jdom2.Attribute
 import org.jdom2.Element
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 fun Profile.profileElement(block: (Element) -> Unit) = Element("profile").apply(block)
 fun TypedXmlObjectCompanion.conditionElement(block: (Element) -> Unit) = Element("condition")
     .applyTypeAttributes(this)

@@ -22,9 +22,7 @@ package com.github.vatbub.smartcharge.profiles.matchers
 import com.github.vatbub.smartcharge.extensions.*
 import com.github.vatbub.smartcharge.profiles.*
 import org.jdom2.Element
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 data class ApplicationMatcher(
     val imageNameMatcher: Matcher<String> = StringMatcher.EqualsMatcher().disabled(),
     val pidMatcher: Matcher<Int> = IntMatcher.EqualsMatcher().disabled(),

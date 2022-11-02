@@ -22,20 +22,17 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.Charger.ChargerState.Unknown
 import com.github.vatbub.smartcharge.ifttt.IftttMakerChannel
 import com.github.vatbub.smartcharge.logging.logger
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit.MILLISECONDS
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlinx.coroutines.*
+import java.util.*
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit.MILLISECONDS
 
-@ExperimentalTime
 object Charger {
     private var lastChargerStateVerificationFuture: Job? = null
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun switchCharger(newChargerState: ChargerState) {
-        logger.info("Switching the charger ${newChargerState.toString().toLowerCase()}...")
+        logger.info("Switching the charger ${newChargerState.toString().lowercase(Locale.getDefault())}...")
 
         expectedChargerState = newChargerState
         val eventName = when (newChargerState) {
@@ -58,7 +55,7 @@ object Charger {
 
         lastChargerStateVerificationFuture?.cancel()
         lastChargerStateVerificationFuture = GlobalScope.launch {
-            delay(Duration.seconds(30).toLong(MILLISECONDS))
+            delay(30.seconds.toLong(MILLISECONDS))
             verifyChargerState()
         }
         logger.debug(result.responseText)
@@ -71,8 +68,8 @@ object Charger {
         if (expectedChargerState != currentChargerState)
             logger.warn(
                 "Please verify that your charger is working. " +
-                        "Your charger is ${currentChargerState.toString().toLowerCase()} " +
-                        "but should be ${expectedChargerState.toString().toLowerCase()}"
+                        "Your charger is ${currentChargerState.toString().lowercase(Locale.getDefault())} " +
+                        "but should be ${expectedChargerState.toString().lowercase(Locale.getDefault())}"
             )
     }
 

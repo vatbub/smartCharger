@@ -19,7 +19,4 @@
  */
 package com.github.vatbub.smartcharge
 
-import kotlin.time.ExperimentalTime
-
-@ExperimentalTime
 fun main(vararg args: String) = EntryClass.actualMain(*args)

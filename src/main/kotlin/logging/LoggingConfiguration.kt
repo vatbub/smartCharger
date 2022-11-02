@@ -28,7 +28,6 @@ import java.util.logging.Level
 import kotlin.properties.Delegates
 import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object LoggingConfiguration {
     private val launchDate = Date()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")

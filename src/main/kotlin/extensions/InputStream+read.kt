@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.smartcharge
+package com.github.vatbub.smartcharge.extensions
 
 import java.io.InputStream
 

@@ -22,9 +22,7 @@ package com.github.vatbub.smartcharge
 import com.github.vatbub.smartcharge.logging.logger
 import oshi.SystemInfo
 import oshi.hardware.PowerSource
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object BatteryInfo {
     private val powerSources: List<PowerSource>
         get() {
