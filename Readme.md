@@ -23,7 +23,7 @@ We are working on a better solution, but for now, you need to...
 You will find the compiled jar under `target/smartCharger-1.0-SNAPSHOT-jar-with-dependencies.jar`.
 
 ## Runtime prerequisites
-- Java JRE 8 or later
+- Java JRE 9 or later
 
 ## Setup
 ### IFTTT setup
@@ -48,6 +48,11 @@ After being done with the IFTTT setup, you may set Smart Charger up on your lapt
 2. Click on `Log in to IFTTT`.
 3. Log in using the same account you used before.
 4. Most likely, you want Smart Charger to start when you start your computer. Therefore, tick the box next to `Start this app with Windows`.
+
+### Using SmartCharger on multiple devices
+By default, SmartCharger will send the events `laptopStartCharging` and `laptopStopCharging` to IFTTT.
+If you use it on multiple devices, you will need to customize this, as IFTTT will otherwise not be able to distinguish the devices to control.
+To do so, simply define different event names in the appropriate settings fields of SmartCharger and use the same event names in the set-up steps above.
 
 ## Charging modes
 Smart Charger supports different charging modes:
