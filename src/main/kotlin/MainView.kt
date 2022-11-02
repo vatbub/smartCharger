@@ -111,7 +111,7 @@ class MainView {
     private var guiUpdateInProgress = false
 
     @FXML
-    fun buttonLogIn(event: ActionEvent?) {
+    fun buttonLogIn() {
         LogInView { apiKey ->
             logger.info("Log in to IFTTT successful")
             textFieldIFTTTMakerApiKey.text = apiKey
@@ -119,19 +119,15 @@ class MainView {
     }
 
     @FXML
-    fun buttonChangeProfileSettingsOnAction(event: ActionEvent?) {
+    fun buttonChangeProfileSettingsOnAction() {
         ProfileDialog.show()
     }
 
     @OptIn(ExperimentalTime::class)
     @FXML
-    fun buttonApplyOverrideForProfilesOnAction(event: ActionEvent?) {
+    fun buttonApplyOverrideForProfilesOnAction() {
         val overrideDurationInMinutes = textBoxOverrideProfilesTimeInMinutes.text.toLong().minutes
         ProfileManager.overrideProfilesUntil(TimeSource.Monotonic.markNow() + overrideDurationInMinutes)
-    }
-
-    @FXML
-    fun buttonHelpApiKeyOnAction(event: ActionEvent?) {
     }
 
     @FXML
@@ -143,7 +139,7 @@ class MainView {
     }
 
     @FXML
-    fun buttonShowLogFileOnAction(event: ActionEvent?) {
+    fun buttonShowLogFileOnAction() {
         val currentLogFile = LoggingHandlers.currentLogFile ?: throw IllegalStateException("File logging is disabled")
         currentLogFile.highlightFileInExplorer()
     }
