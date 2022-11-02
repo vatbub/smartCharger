@@ -26,7 +26,6 @@ import com.github.vatbub.smartcharge.logging.LoggingHandlers
 import com.github.vatbub.smartcharge.logging.logger
 import com.github.vatbub.smartcharge.profiles.ProfileManager
 import javafx.collections.ListChangeListener
-import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
@@ -34,7 +33,9 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextFlow
 import org.apache.commons.lang3.exception.ExceptionUtils
+import java.awt.Desktop
 import java.io.StringWriter
+import java.net.URI
 import java.net.URL
 import java.util.*
 import java.util.logging.Level
@@ -131,11 +132,14 @@ class MainView {
     }
 
     @FXML
-    fun buttonHelpStartEventOnAction(event: ActionEvent?) {
+    fun buttonHelpStartEventOnAction() {
+        buttonHelpStopEventOnAction()
     }
 
     @FXML
-    fun buttonHelpStopEventOnAction(event: ActionEvent?) {
+    fun buttonHelpStopEventOnAction() {
+        Desktop.getDesktop()
+            .browse(URI("https://github.com/vatbub/smartCharger#using-smartcharger-on-multiple-devices"))
     }
 
     @FXML
