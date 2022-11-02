@@ -19,26 +19,28 @@
  */
 package com.github.vatbub.smartcharge
 
-import com.github.vatbub.smartcharge.extensions.source
-import com.github.vatbub.smartcharge.logging.logger
-import javafx.application.Platform
-import javafx.concurrent.Worker
-import javafx.concurrent.Worker.State.RUNNING
+import com.github.vatbub.smartcharge.ifttt.IftttMakerChannel
+import com.github.vatbub.smartcharge.util.javafx.bindAndMap
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.Label
-import javafx.scene.control.ProgressBar
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType.INFORMATION
+import javafx.scene.control.Button
+import javafx.scene.control.ButtonType.OK
+import javafx.scene.control.TextField
 import javafx.scene.image.Image
-import javafx.scene.web.WebView
 import javafx.stage.Stage
-import java.net.URL
+import java.awt.Desktop
+import java.net.URI
 import java.util.*
-import java.util.regex.Pattern
 
 
-class LogInView(private val startUrl: String, private val loadStartUrlAgainIfThisUrlIsLoaded: String? = null, showGuiOnClassInitialization: Boolean = true, private val onApiTokenReceived: (apiKey: String) -> Boolean) {
+class LogInView(
+    showGuiOnClassInitialization: Boolean = true,
+    private val onApiTokenReceived: (apiKey: String) -> Unit
+) {
     @Suppress("MemberVisibilityCanBePrivate")
     val stage = Stage()
 
@@ -56,67 +58,34 @@ class LogInView(private val startUrl: String, private val loadStartUrlAgainIfThi
     }
 
     @FXML
-    private lateinit var resources: ResourceBundle
+    private lateinit var iftttApiKeyTextField: TextField
 
     @FXML
-    private lateinit var location: URL
+    private lateinit var testConnectionButton: Button
 
     @FXML
-    private lateinit var urlLabel: Label
-
-    @FXML
-    private lateinit var webView: WebView
-
-    @FXML
-    private lateinit var progressBar: ProgressBar
-
-    @Suppress("SENSELESS_COMPARISON")
-    @FXML
-    fun initialize() {
-        assert(urlLabel != null) { "fx:id=\"urlLabel\" was not injected: check your FXML file 'LogInView.fxml'." }
-        assert(webView != null) { "fx:id=\"webView\" was not injected: check your FXML file 'LogInView.fxml'." }
-        assert(progressBar != null) { "fx:id=\"progressBar\" was not injected: check your FXML file 'LogInView.fxml'." }
-
-        urlLabel.textProperty().bind(webView.engine.locationProperty())
-        stage.titleProperty().bind(webView.engine.titleProperty())
-        progressBar.progressProperty().bind(webView.engine.loadWorker.progressProperty())
-        webView.engine.loadWorker.stateProperty().addListener { _, _, newValue ->
-            progressBar.isVisible = when (newValue) {
-                RUNNING -> true
-                else -> false
-            }
-        }
-
-        webView.engine.locationProperty().addListener { _, _, newValue ->
-            logger.debug("WebView is browsing to $newValue")
-            if (loadStartUrlAgainIfThisUrlIsLoaded != null && newValue == loadStartUrlAgainIfThisUrlIsLoaded)
-                Platform.runLater { webView.engine.load(startUrl) }
-        }
-
-        webView.engine.loadWorker.stateProperty().addListener { _, _, newState ->
-            if (newState === Worker.State.SUCCEEDED && webView.engine.location == startUrl) {
-                getApiKeyFromHtmlSource(webView.engine.document.source)
-            }
-        }
-
-        webView.engine.load(startUrl)
+    fun cancelOnAction() {
+        stage.hide()
     }
 
-    private fun getApiKeyFromHtmlSource(source: String) {
-        val pattern = Pattern.compile("https://maker\\.ifttt\\.com/use/.*\\\\\\&quot;}&quot;}]},&quot;liveChannels", Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(source)
-        if (!matcher.find()) {
-            logger.error("We were expecting to find the IFTTT Api Key on this website, but something went wrong. Please report this to the developers!")
-            stage.hide()
-            return
-        }
+    @FXML
+    fun testConnectionOnAction() {
+        val apiKey = iftttApiKeyTextField.text
+        IftttMakerChannel(apiKey).sendEvent("apiKeyTest").throwExceptionIfNecessary()
+        onApiTokenReceived(apiKey)
+        stage.hide()
+        Alert(INFORMATION, "Login was successful.", OK).show()
+    }
 
-        val matchingResult = matcher.group(0)
-        val apiKey = matchingResult
-                .removePrefix("https://maker.ifttt.com/use/")
-                .removeSuffix("\\&quot;}&quot;}]},&quot;liveChannels")
-        val closeForm = onApiTokenReceived(apiKey)
-        if (closeForm)
-            stage.hide()
+    @FXML
+    fun openIftttInBrowser() {
+        Desktop.getDesktop().browse(URI("https://ifttt.com/maker_webhooks"))
+    }
+
+    @FXML
+    fun initialize() {
+        testConnectionButton.disableProperty()
+            .bindAndMap(iftttApiKeyTextField.textProperty()) { it.isEmpty() }
+        iftttApiKeyTextField.text = preferences[Keys.IFTTTMakerApiKey]
     }
 }
